@@ -1,0 +1,39 @@
+gh_lang,                              [java, javascript, ruby]
+gh_num_commits_in_push,               [NULL,1,..,20]  
+git_prev_commit_resolution_status,    [build_found, merge_found, no_previous_build]  
+gh_team_size,                         [0,...,288]
+git_num_all_built_commits,            [1,33410]
+gh_num_issue_comments,                [NULL, 0, ..,98]
+gh_num_commit_comments,               [0,..,129]       
+gh_num_pr_comments,                   [NULL, 0,..,887]
+git_diff_src_churn,                   [0,..,5278263]
+git_diff_test_churn,                  [0,..,293495]
+gh_diff_files_added,                  [0,..,24440]
+gh_diff_files_deleted,                int
+gh_diff_files_modified,               int
+gh_diff_tests_added,                  int
+gh_diff_tests_deleted,                int
+gh_diff_src_files,                    int
+gh_diff_doc_files,                    int
+gh_diff_other_files,                  int
+gh_num_commits_on_files_touched,      int
+gh_sloc,                              int
+gh_test_lines_per_kloc,               double
+gh_test_cases_per_kloc,               double
+gh_asserts_cases_per_kloc,            double
+gh_by_core_team_member,               double
+gh_description_complexity,            int
+gh_pushed_at,                         date
+gh_build_started_at,                  date
+tr_duration,                          int
+tr_log_bool_tests_ran,                double
+tr_log_bool_tests_failed,             double
+tr_log_num_tests_ok,                  int (as string?)
+tr_log_num_tests_failed,              int (as string?)
+tr_log_num_tests_run,                 int (as string?)
+tr_log_num_tests_skipped,             int (as string?)
+tr_log_tests_failed,                  int (as string?)
+tr_log_testduration,                  double
+tr_log_buildduration,                 double
+tr_status                             [canceled, errored, failed, passed, started]
+                                         ignore   0          0      1      ignore             
