@@ -32,7 +32,6 @@ for rowIndex, row in enumerate(dataSet):
         for i in range(len(row)):
             # lang case
             if i == 32:
-                #print(row[i])
                 if row[i] == 'java':
                     A[rowIndex][32] = 1
                     A[rowIndex][33] = 0
@@ -72,7 +71,6 @@ for rowIndex, row in enumerate(dataSet):
                     y[rowIndex] = 1
                 else:
                     y[rowIndex] = 0
-                   #A[rowIndex][i+4] = time.mktime(row[i].timetuple())
             else:
                 if row[i] != None and row[i] != '':
                     A[rowIndex][i] = float(row[i])
