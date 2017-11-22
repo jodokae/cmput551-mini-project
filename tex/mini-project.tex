@@ -1,0 +1,76 @@
+\documentclass[a4paper,11pt]{report}
+
+\usepackage{graphicx}
+\usepackage[utf8x]{inputenc}
+\usepackage{fancyvrb}
+\usepackage{courier}
+\usepackage{helvet}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{pdfpages}
+\usepackage[strict]{changepage}
+
+\pdfoptionpdfminorversion=6
+
+\setlength{\voffset}{-1in}
+\setlength{\hoffset}{-1in}
+
+\setlength{\topmargin}{2.5cm}		   
+\setlength{\headheight}{0cm}		   
+\setlength{\headsep}{0cm}		   
+\setlength{\oddsidemargin}{3,3cm}
+\setlength{\evensidemargin}{2,7cm}
+\setlength{\textwidth}{15cm}		   
+\setlength{\textheight}{23,5cm}		   
+\setlength{\parindent}{0cm}
+
+\newcommand{\emptyLine}{{\LARGE ~\\}}
+
+\begin{document}
+	
+	\begin{center}
+	{\huge\bfseries Predicting Continuous Integration Build Outcome \par}
+	{\Large Project Report\par}
+	
+	\vspace{1cm}
+	{\Large\itshape Johannes Kästle\par}
+	{ University of Alberta \par}
+	\end{center}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.5ex plus0.5ex minus0.5ex}
+
+Predict Build Outcome
+	Explain Why
+	Dataset
+Background
+	CI Travis
+	Algorithms
+	Evalution techniques
+Dataset
+	Size
+	Features
+Methodology
+	Extract Dataset (Change Set)
+	Missing Features
+	
+	Algorithms
+	Parameter Selection
+	Splits
+Results
+	Optimal Parameters
+	Measurements
+	Statistics
+Summary \& Threats
+	
+	
+
+
+\cite{msr17challenge}
+
+\bibliographystyle{ieeetr}
+\bibliography{literature}
+
+
+\end{document}
