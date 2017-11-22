@@ -1,92 +1,125 @@
 import numpy as np
 from sklearn.naive_bayes import GaussianNB
+from sklearn import tree
+from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import Imputer
 from sklearn.preprocessing import scale
 from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import StratifiedShuffleSplit
 from prettytable import PrettyTable
+from sklearn.metrics import accuracy_score
 
 print ('Loading Data')
 
-A = np.load('A.npy')
-y = np.load('y.npy')
+A = np.load('A_small.npy')
+y = np.load('y_small.npy')
 
 print ('Encoding Data')
 
 imp = Imputer(missing_values='NaN', strategy='mean', axis=0)
 imp.fit(A)
 
-A_missingEncoded = imp.transform(A)
-#scale(A_missingEncoded)
+X = imp.transform(A)
 
 print ('Splitting Data')
 
-(A_learn, A_test) = np.split(A_missingEncoded, 2)
-(y_learn, y_test) = np.split(y, 2)
+sss = StratifiedShuffleSplit(n_splits=3, test_size=0.1, random_state=0)
 
+X_learn = []
+X_test = []
+y_learn = []
+y_test = []
 
-#print(A_missingEncoded)
-#print(y)
+for train_index, test_index in sss.split(X, y):
+    X_learn.append(X[train_index])
+    X_test.append(X[test_index])
+    y_learn.append(y[train_index])
+    y_test.append(y[test_index])
+
 
 print ('Comp: 0 / 1: ' + str((y == 0).sum() / (y == 1).sum()))
-print ('Lear: 0 / 1: ' + str((y_learn == 0).sum() / (y_learn == 1).sum()))
-print ('Test: 0 / 1: ' + str((y_test == 0).sum() / (y_test == 1).sum()))
 
-gnb = GaussianNB()
-gnb.fit(A_learn, y_learn)
+for split in range(len(X_learn)):
+    
+    print('\n Mean \n\n')
 
-print(gnb.get_params())
+    pred = 0 if ((y_learn[split] == 0).sum()) > ((y_learn[split] ==1).sum()) else 1
+    
+    y_pred = np.zeros(y_test[split].shape) + pred
+    
+    print("Number of mislabeled points out of a total %d points : %d" % (X_test[split].shape[0],(y_test[split] != y_pred).sum()))
+    tn, fp, fn, tp = confusion_matrix(y_test[split], y_pred).ravel()
+    x = PrettyTable()
+    x.field_names = ["", "True (Real)", "False (Real)", "Sum"]
+    x.add_row(["True (Pred)",tp, fp, tp+fp])
+    x.add_row(["False (Pred)",fn, tn, fn + tn])
+    x.add_row(["Sum", tp+fn, fp+tn, tp+fn+tn+fp])
+    print(x)
+    
+    print('Acc: ' + str(accuracy_score(y_test[split], y_pred)))
+    
+        
+    print('\n Gaussian Naive Bayes \n\n')
 
-y_pred = gnb.predict(A_test)
-print("Number of mislabeled points out of a total %d points : %d" % (A_test.shape[0],(y_test != y_pred).sum()))
+    gnb = GaussianNB()
+    gnb.fit(X_learn[split], y_learn[split])
 
-tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
-x = PrettyTable()
-x.field_names = ["", "True (Real)", "False (Real)", "Sum"]
-x.add_row(["True (Pred)",tp, fp, tp+fp])
-x.add_row(["False (Pred)",fn, tn, fn + tn])
-x.add_row(["Sum", tp+fn, fp+tn, tp+fn+tn+fp])
-print(x)
+    print(gnb.get_params())
 
-from sklearn import tree
+    y_pred = gnb.predict(X_test[split])
+    print("Number of mislabeled points out of a total %d points : %d" % (X_test[split].shape[0],(y_test[split] != y_pred).sum()))
 
+    tn, fp, fn, tp = confusion_matrix(y_test[split], y_pred).ravel()
+    x = PrettyTable()
+    x.field_names = ["", "True (Real)", "False (Real)", "Sum"]
+    x.add_row(["True (Pred)",tp, fp, tp+fp])
+    x.add_row(["False (Pred)",fn, tn, fn + tn])
+    x.add_row(["Sum", tp+fn, fp+tn, tp+fn+tn+fp])
+    print(x)
+    
+    print('Acc: ' + str(accuracy_score(y_test[split], y_pred)))
 
-print('\n Decision Tree \n\n')
+    print('\n Decision Tree \n\n')
 
-clf = tree.DecisionTreeClassifier()
-clf = clf.fit(A_learn, y_learn)
+    clf = tree.DecisionTreeClassifier(criterion='gini', splitter='best', max_depth=None, min_samples_split=2, 
+            min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, random_state=None, max_leaf_nodes=None, 
+            min_impurity_decrease=0.0, min_impurity_split=None, class_weight=None, presort=False)
+    
+    clf = clf.fit(X_learn[split], y_learn[split])
 
-y_pred = clf.predict(A_test)
+    y_pred = clf.predict(X_test[split])
 
-print("Number of mislabeled points out of a total %d points : %d" % (A_test.shape[0],(y_test != y_pred).sum()))
-tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
-x = PrettyTable()
-x.field_names = ["", "True (Real)", "False (Real)", "Sum"]
-x.add_row(["True (Pred)",tp, fp, tp+fp])
-x.add_row(["False (Pred)",fn, tn, fn + tn])
-x.add_row(["Sum", tp+fn, fp+tn, tp+fn+tn+fp])
-print(x)
+    print("Number of mislabeled points out of a total %d points : %d" % (X_test[split].shape[0],(y_test[split] != y_pred).sum()))
+    tn, fp, fn, tp = confusion_matrix(y_test[split], y_pred).ravel()
+    x = PrettyTable()
+    x.field_names = ["", "True (Real)", "False (Real)", "Sum"]
+    x.add_row(["True (Pred)",tp, fp, tp+fp])
+    x.add_row(["False (Pred)",fn, tn, fn + tn])
+    x.add_row(["Sum", tp+fn, fp+tn, tp+fn+tn+fp])
+    print(x)
+        
+    print('Acc: ' + str(accuracy_score(y_test[split], y_pred)))
 
-print('\n Neural Net \n\n')
+    print('\n Neural Net \n\n')
 
+    clf = MLPClassifier(activation='relu', alpha=1e-05, batch_size='auto',
+           beta_1=0.9, beta_2=0.999, early_stopping=False,
+           epsilon=1e-08, hidden_layer_sizes=(15,), learning_rate='constant',
+           learning_rate_init=0.001, max_iter=200, momentum=0.9,
+           nesterovs_momentum=True, power_t=0.5, random_state=1, shuffle=True,
+           solver='lbfgs', tol=0.0001, validation_fraction=0.1, verbose=False,
+           warm_start=False)
 
-from sklearn.neural_network import MLPClassifier
+    clf.fit(X_learn[split], y_learn[split])
+    y_pred = clf.predict(X_test[split])
 
-clf = MLPClassifier(activation='relu', alpha=1e-05, batch_size='auto',
-       beta_1=0.9, beta_2=0.999, early_stopping=False,
-       epsilon=1e-08, hidden_layer_sizes=(15,), learning_rate='constant',
-       learning_rate_init=0.001, max_iter=200, momentum=0.9,
-       nesterovs_momentum=True, power_t=0.5, random_state=1, shuffle=True,
-       solver='lbfgs', tol=0.0001, validation_fraction=0.1, verbose=False,
-       warm_start=False)
-
-clf.fit(A_learn, y_learn)
-y_pred = clf.predict(A_test)
-
-print("Number of mislabeled points out of a total %d points : %d" % (A_test.shape[0],(y_test != y_pred).sum()))
-tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
-x = PrettyTable()
-x.field_names = ["", "True (Real)", "False (Real)", "Sum"]
-x.add_row(["True (Pred)",tp, fp, tp+fp])
-x.add_row(["False (Pred)",fn, tn, fn + tn])
-x.add_row(["Sum", tp+fn, fp+tn, tp+fn+tn+fp])
-print(x)
+    print("Number of mislabeled points out of a total %d points : %d" % (X_test[split].shape[0],(y_test[split] != y_pred).sum()))
+    tn, fp, fn, tp = confusion_matrix(y_test[split], y_pred).ravel()
+    x = PrettyTable()
+    x.field_names = ["", "True (Real)", "False (Real)", "Sum"]
+    x.add_row(["True (Pred)",tp, fp, tp+fp])
+    x.add_row(["False (Pred)",fn, tn, fn + tn])
+    x.add_row(["Sum", tp+fn, fp+tn, tp+fn+tn+fp])
+    print(x)
+    
+    print('Acc: ' + str(accuracy_score(y_test[split], y_pred)))
