@@ -39,8 +39,8 @@ def printRes(y_test, y_pred):
 
 print ('Loading Data')
 
-A = np.load('A_small.npy')
-y = np.load('y_small.npy')
+A = np.load('A.npy')
+y = np.load('y.npy')
 
 print ('Encoding Data')
 
@@ -105,25 +105,29 @@ for split in range(numruns):
     print('Run ' + str(split) + '/' + str(numruns))
     
     
-    #print('\n Mean \n\n')
+    print('Mean')
 
     pred = 0 if ((y_learn[split] == 0).sum()) > ((y_learn[split] ==1).sum()) else 1
     y_pred = np.zeros(y_test[split].shape) + pred
     
     meanAcc[split][0] = accuracy_score(y_test[split], y_pred) 
     
+    print(str(1) + '/' + str(1) + ': ' + str(meanAcc[split][0]))
+    
+    
     #printRes(y_test[split], y_pred)
     
         
-    #print('\n Gaussian Naive Bayes \n\n')
+    print('Gaussian Naive Bayes')
 
     gnb = GaussianNB()
     bayesAcc[split][0] = doStuff(gnb, X_learn[split], y_learn[split], X_test[split], y_test[split])
 
+    print(str(1) + '/' + str(1) + ': ' + str(bayesAcc[split][0]))
     
     
     
-    #print('\n Decision Tree Gini \n\n')   
+    print('Decision Tree Gini')   
     
     for index, params in enumerate(treeParams):
         clf = DecisionTreeClassifier(**params)
@@ -140,7 +144,7 @@ for split in range(numruns):
     
         
     
-    #print('\n Neural Net \n\n')
+    print('Neural Net')
     
     for index, params in enumerate(nnParams):
         clf = MLPClassifier(**params)
