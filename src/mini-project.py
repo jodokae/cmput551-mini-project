@@ -99,6 +99,9 @@ print('Search for best parameters')
 (X_train, X_test, y_train, y_test) = utils.loadAndSplit(fullDataSet)
 (bestTreeFeat, bestNnFeat) = paramSearch(X_train, y_train)
 
+print('\nTree Params: ' + str(bestTreeFeat))
+print('NN Params: ' + str(bestNnFeat))
+
 print('Run with best parameters')
 compareAlgos(X_test, y_test, 5, bestTreeFeat, bestNnFeat)
 
