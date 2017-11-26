@@ -4,22 +4,16 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.dummy import DummyClassifier
 from sklearn.preprocessing import Imputer
-from sklearn.preprocessing import scale
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.model_selection import GridSearchCV
-from prettytable import PrettyTable
-from sklearn.metrics import accuracy_score   
-import itertools
+from prettytable import PrettyTable 
 
-def learnAndPredict(learner, X_learn, y_learn, X_test, y_test, printResults=False):
+def learnAndPredict(learner, X_learn, y_learn, X_test, y_test):
     learner.fit(X_learn, y_learn)
 
     y_pred = learner.predict(X_test)
-    
-    if printResults == True:
-        printRes(y_test, y_pred)
     
     tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
     return (tn, fp, fn, tp)
@@ -46,20 +40,6 @@ def printMatrix(tp, fp, fn, tn):
     print('Acc: ' + str(acc))
     
     
-    
-def printRes(y_test, y_pred):
-    print("Number of mislabeled points out of a total %d points : %d" % (y_test.shape[0],(y_test != y_pred).sum()))
-
-    tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
-    x = PrettyTable()
-    x.field_names = ["", "True (Real)", "False (Real)", "Sum"]
-    x.add_row(["True (Pred)",tp, fp, tp+fp])
-    x.add_row(["False (Pred)",fn, tn, fn + tn])
-    x.add_row(["Sum", tp+fn, fp+tn, tp+fn+tn+fp])
-    print(x)
-    
-    print('Acc: ' + str(accuracy_score(y_test, y_pred)))
-
 def load(full):
     print ('Loading Data')
     if full==True:
