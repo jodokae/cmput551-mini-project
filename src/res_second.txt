@@ -1,0 +1,68 @@
+Full Data
+
+Search for best parameters
+Loading Data
+Encoding Data
+Grid Search for Tree
+Fitting 5 folds for each of 2 candidates, totalling 10 fits
+[Parallel(n_jobs=-1)]: Done  10 out of  10 | elapsed:   45.9s finished
+{'criterion': 'gini', 'max_features': 'sqrt', 'splitter': 'random', 'random_state': None}: 0.914807362254
+Grid Search for Neural Net
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+[Parallel(n_jobs=-1)]: Done   5 out of   5 | elapsed:  8.0min finished
+{'activation': 'logistic'}: 0.708942415813
+Run with best parameters
+Splitting Data
+Run 1/5
+Run 2/5
+Run 3/5
+Run 4/5
+Run 5/5
+
+Mean
+Number of mislabeled points out of a total 125038 points : 36728
++--------------+-------------+--------------+----------+
+|              | True (Real) | False (Real) |   Sum    |
++--------------+-------------+--------------+----------+
+| True (Pred)  |   88310.0   |   36728.0    | 125038.0 |
+| False (Pred) |     0.0     |     0.0      |   0.0    |
+|     Sum      |   88310.0   |   36728.0    | 125038.0 |
++--------------+-------------+--------------+----------+
+Acc: 0.70626529535
+
+Bayes
+Number of mislabeled points out of a total 125038 points : 37125
++--------------+-------------+--------------+----------+
+|              | True (Real) | False (Real) |   Sum    |
++--------------+-------------+--------------+----------+
+| True (Pred)  |   86722.4   |   35538.2    | 122260.6 |
+| False (Pred) |    1587.6   |    1189.8    |  2777.4  |
+|     Sum      |   88310.0   |   36728.0    | 125038.0 |
++--------------+-------------+--------------+----------+
+Acc: 0.703083862506
+
+Tree
+Number of mislabeled points out of a total 125038 points : 9915
++--------------+-------------+--------------+----------+
+|              | True (Real) | False (Real) |   Sum    |
++--------------+-------------+--------------+----------+
+| True (Pred)  |   83359.4   |    4964.4    | 88323.8  |
+| False (Pred) |    4950.6   |   31763.6    | 36714.2  |
+|     Sum      |   88310.0   |   36728.0    | 125038.0 |
++--------------+-------------+--------------+----------+
+Acc: 0.920704105952
+
+Neural Network
+Number of mislabeled points out of a total 125038 points : 36603
++--------------+-------------+--------------+----------+
+|              | True (Real) | False (Real) |   Sum    |
++--------------+-------------+--------------+----------+
+| True (Pred)  |   86813.4   |   35106.8    | 121920.2 |
+| False (Pred) |    1496.6   |    1621.2    |  3117.8  |
+|     Sum      |   88310.0   |   36728.0    | 125038.0 |
++--------------+-------------+--------------+----------+
+Acc: 0.707261792415
+
+Tree Params: {'criterion': 'gini', 'max_features': 'sqrt', 'splitter': 'random', 'random_state': None}
+NN Params: {'activation': 'logistic'}
+
