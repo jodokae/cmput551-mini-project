@@ -7,13 +7,10 @@ from sklearn.preprocessing import scale
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.model_selection import GridSearchCV
 from prettytable import PrettyTable
 from sklearn.metrics import accuracy_score   
 import itertools
-    
-
-def dict_product(dicts):
-    return (dict(zip(dicts, x)) for x in itertools.product(*dicts.values()))
 
 def learnAndPredict(learner, X_learn, y_learn, X_test, y_test, printResults=False):
     learner.fit(X_learn, y_learn)
@@ -24,7 +21,7 @@ def learnAndPredict(learner, X_learn, y_learn, X_test, y_test, printResults=Fals
         printRes(y_test, y_pred)
     
     tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
-    return (accuracy_score(y_test, y_pred), tn, fp, fn, tp)
+    return (tn, fp, fn, tp)
     
 
 def printMeanedMatrix(matrix):
@@ -80,12 +77,57 @@ def load(full):
     
     return (X, y)
     
-def prepareData(fullData, numruns):
-    X, y = load(fullData)
+def paramSearch(X, y):
+
+    nnParams = [{
+        'activation':['logistic'],
+        #'hidden_layer_sizes':[(10,), (50,), (100,)],
+        'alpha':[1e-4, 1e-3, 1e-2],
+        #'learning_rate_init':[1e-3, 1e-2, 1e-1],
+        #'beta_1':[0.1, 0.5, 0.9], 
+        #'beta_2':[0.1, 0.5, 0.9]
+        }]
     
+    treeParams = [{'criterion':['gini'],
+            'splitter':['random'],
+            'random_state':[None],
+            #'max_depth':[1, 10, 100], 
+            #'min_samples_split':[1e-5, 1e-4, 1e-3], 
+            #'min_samples_leaf':[1e-5, 1e-4, 1e-3],
+            #'min_weight_fraction_leaf':[1e-5, 1e-4, 1e-3],
+            'max_features':['sqrt', 'log2'],
+            #'max_leaf_nodes':[100, 1000, 10000]
+        }]
+    
+    print('Grid Search for Tree')
+    clf = GridSearchCV(DecisionTreeClassifier(), treeParams, cv=5, verbose=1, n_jobs=-1)
+    
+    clf.fit(X, y)
+    
+    acc = clf.best_score_
+    bestParamsTree = clf.best_params_
+    print(str(bestParamsTree) + ': ' + str(acc))
+    
+    print('Grid Search for Neural Net')
+    clf = GridSearchCV(MLPClassifier(), nnParams, cv=5, verbose=1, n_jobs=-1)
+    clf.fit(X, y)
+    
+    acc = clf.best_score_
+    bestParamsNN = clf.best_params_
+    print(str(bestParamsNN) + ': ' + str(acc))
+    
+    return (bestParamsTree, bestParamsNN)
+    
+def loadAndSplit(fullSet):
+
+    X, y = load(fullSet)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, stratify=y)
+    return (X_train, X_test, y_train, y_test)
+    
+def splitData(X, y):
     print ('Splitting Data')
 
-    sss = StratifiedShuffleSplit(n_splits=numruns, test_size=0.1)
+    sss = StratifiedShuffleSplit(n_splits=5, test_size=0.1)
 
     X_learn = []
     X_test = []
@@ -99,180 +141,87 @@ def prepareData(fullData, numruns):
         y_test.append(y[test_index])
 
     return (X_learn, X_test, y_learn, y_test)
-
-def run(fullData, printResults, numruns, paramSearch=True, bestTreeParams={}, bestNeuralParams={}):
-
-    X_learn, X_test, y_learn, y_test = prepareData(fullData, numruns)
-
-    if paramSearch == True:
-        treeParams = list(dict_product(dict(
-            criterion=['gini'],
-            splitter=['random'],
-            random_state=[None],
-            max_depth=[1, 10, 100], 
-            min_samples_split=[1e-5, 1e-4, 1e-3], 
-            min_samples_leaf=[1e-5, 1e-4, 1e-3],
-            min_weight_fraction_leaf=[1e-5, 1e-4, 1e-3],
-            max_features=['sqrt', 'log2'],
-            max_leaf_nodes=[100, 1000, 10000]
-        )))
-        nnParams = list(dict_product(dict(
-            activation=['logistic'],
-            hidden_layer_sizes=[(10,), (50,), (100,)],
-            alpha=[1e-4, 1e-3, 1e-2],
-            learning_rate_init=[1e-3, 1e-2, 1e-1],
-            beta_1=[0.1, 0.5, 0.9], 
-            beta_2=[0.1, 0.5, 0.9]
-        )))
-    else:
-        treeParams = [bestTreeParams]
-        nnParams = [bestNeuralParams]
-        
-    numTreeParams = len(treeParams)
-    numNnParams = len(nnParams)
-    numMeanParams = 1
-    numBayesParams = 1
     
-    meanAcc = np.zeros((numruns, numMeanParams))
-    bayesAcc = np.zeros((numruns, numBayesParams))
-    treeAcc = np.zeros((numruns, numTreeParams))
-    nnAcc = np.zeros((numruns, numNnParams))
+def compareAlgos(X, y, treeParams, nnParams):
+    print ('Splitting Data')
+
+    X_learn, X_test, y_learn, y_test = splitData(X, y)
     
-    meanMatrix = np.zeros((numruns, 4))
-    bayesMatrix = np.zeros((numruns, 4))
-    treeMatrix = np.zeros((numruns, 4))
-    nnMatrix = np.zeros((numruns, 4))
-
-    print ('Comp: 0 / 1: ' + str((y_test[0] == 0).sum() / (y_test[0] == 1).sum()))
-
-    for split in range(numruns):
-
-        print('Run ' + str(split+1) + '/' + str(numruns))       
+    meanMatrix = np.zeros((5, 4))
+    bayesMatrix = np.zeros((5, 4))
+    treeMatrix = np.zeros((5, 4))
+    nnMatrix = np.zeros((5, 4))
+    
+    for split in range(5):
+        print('Run ' + str(split+1) + '/' + str(5))       
         
-        print('Mean')
+        #print('Mean')
 
         pred = 0 if ((y_learn[split] == 0).sum()) > ((y_learn[split] ==1).sum()) else 1
         y_pred = np.zeros(y_test[split].shape) + pred
         
-        meanAcc[split][0] = accuracy_score(y_test[split], y_pred) 
         tn, fp, fn, tp = confusion_matrix(y_test[split], y_pred).ravel()
-        
-        print(str(1) + '/' + str(1) + ': ' + str(meanAcc[split][0]))
-        
-        if printResults == True:
-            meanMatrix[split][0] = tp
-            meanMatrix[split][1] = fp
-            meanMatrix[split][2] = fn
-            meanMatrix[split][3] = tn
-        
+    
+        meanMatrix[split][0] = tp
+        meanMatrix[split][1] = fp
+        meanMatrix[split][2] = fn
+        meanMatrix[split][3] = tn
+    
         
                     
-        print('Gaussian Naive Bayes')
+        #print('Gaussian Naive Bayes')
 
         gnb = GaussianNB()
-        bayesAcc[split][0], tn, fp, fn, tp = learnAndPredict(gnb, X_learn[split], y_learn[split], X_test[split], y_test[split])
-
-        print(str(1) + '/' + str(1) + ': ' + str(bayesAcc[split][0]))
+        tn, fp, fn, tp = learnAndPredict(gnb, X_learn[split], y_learn[split], X_test[split], y_test[split])
           
-        if printResults == True:
-            bayesMatrix[split][0] = tp
-            bayesMatrix[split][1] = fp
-            bayesMatrix[split][2] = fn
-            bayesMatrix[split][3] = tn
+        bayesMatrix[split][0] = tp
+        bayesMatrix[split][1] = fp
+        bayesMatrix[split][2] = fn
+        bayesMatrix[split][3] = tn
         
-        print('Decision Tree Gini')   
+        #print('Decision Tree Gini')   
+                
+                
+        clf = DecisionTreeClassifier(**treeParams)
+    
+        tn, fp, fn, tp = learnAndPredict(clf, X_learn[split], y_learn[split], X_test[split], y_test[split])
+                            
+        treeMatrix[split][0] = tp
+        treeMatrix[split][1] = fp
+        treeMatrix[split][2] = fn
+        treeMatrix[split][3] = tn
+                   
         
-        for index, params in enumerate(treeParams):
-            clf = DecisionTreeClassifier(**params)
+        #print('Neural Net')
         
-            #print(clf.get_params())
-       
-            acc, tn, fp, fn, tp = learnAndPredict(clf, X_learn[split], y_learn[split], X_test[split], y_test[split])
-            
-            print(str(index+1) + '/' + str(numTreeParams) + ': ' + str(acc))
-            
-            treeAcc[split][index] = acc
-            
-            if printResults == True:
-                treeMatrix[split][0] = tp
-                treeMatrix[split][1] = fp
-                treeMatrix[split][2] = fn
-                treeMatrix[split][3] = tn
-                       
+        clf = MLPClassifier(**nnParams)
         
-        print('Neural Net')
-        
-        for index, params in enumerate(nnParams):
-            clf = MLPClassifier(**params)
-            
-            acc, tn, fp, fn, tp = learnAndPredict(clf, X_learn[split], y_learn[split], X_test[split], y_test[split])
-            
-            print(str(index+1) + '/' + str(numNnParams) + ': ' + str(acc))
-            
-            nnAcc[split][index] = acc
-        
-            if printResults == True:
-                nnMatrix[split][0] = tp
-                nnMatrix[split][1] = fp
-                nnMatrix[split][2] = fn
-                nnMatrix[split][3] = tn
+        tn, fp, fn, tp = learnAndPredict(clf, X_learn[split], y_learn[split], X_test[split], y_test[split])
+    
+        nnMatrix[split][0] = tp
+        nnMatrix[split][1] = fp
+        nnMatrix[split][2] = fn
+        nnMatrix[split][3] = tn
 
-    meanTreeAcc = np.mean(treeAcc, axis=0)
-
-    bestTreeAcc = 0
-    bestTreeFeat = {}
-    for i, mean in enumerate(meanTreeAcc):
-        if(mean > bestTreeAcc):
-            bestTreeAcc = mean
-            bestTreeFeat = treeParams[i]
-
-    meanNnAcc = np.mean(nnAcc, axis=0)
-
-    bestNnAcc = 0
-    bestNnFeat = {}
-    for i, mean in enumerate(meanNnAcc):
-        if(mean > bestNnAcc):
-            bestNnAcc = mean
-            bestNnFeat = nnParams[i]
-            
-    meanMeanAcc = np.mean(meanAcc, axis=0)
-
-    bestMeanAcc = 0
-    bestMeanFeat = {}
-    for i, mean in enumerate(meanMeanAcc):
-        if(mean > bestMeanAcc):
-            bestMeanAcc = mean
-            
-    meanBayesAcc = np.mean(bayesAcc, axis=0)
-
-    bestBayesAcc = 0
-    bestBayesFeat = {}
-    for i, mean in enumerate(meanBayesAcc):
-        if(mean > bestBayesAcc):
-            bestBayesAcc = mean
-
-    if printResults==False:
-        print('Mean: Acc ' + str(bestMeanAcc))
-        print('Bayes: Acc ' + str(bestBayesAcc))
-        print('Tree: Acc ' + str(bestTreeAcc) + ' : ' + str(bestTreeFeat))
-        print('NN: Acc ' + str(bestNnAcc) + ' : ' + str(bestNnFeat))
-    else:
-        print('\nMean')
-        printMeanedMatrix(meanMatrix)
-        print('\nBayes')
-        printMeanedMatrix(bayesMatrix)
-        print('\nTree')
-        printMeanedMatrix(treeMatrix)
-        print('\nNeural Network')
-        printMeanedMatrix(nnMatrix)
-
-    return(bestTreeFeat, bestNnFeat)
+    print('\nMean')
+    printMeanedMatrix(meanMatrix)
+    print('\nBayes')
+    printMeanedMatrix(bayesMatrix)
+    print('\nTree')
+    printMeanedMatrix(treeMatrix)
+    print('\nNeural Network')
+    printMeanedMatrix(nnMatrix)
+    
 
 
 print('Search for best Parameters')
-(bestTreeFeat, bestNnFeat) = run(False, False, 5)
-print('Evaluate Parameters on Full Dataset')
-run(True, True, 5, False, bestTreeFeat, bestNnFeat)
+#(bestTreeFeat, bestNnFeat) = run(True, False, 5)
+#print('Evaluate Parameters on Full Dataset')
+#run(True, True, 5, False, bestTreeFeat, bestNnFeat)
+
+(X_train, X_test, y_train, y_test) = loadAndSplit(False)
+(bestTreeFeat, bestNnFeat) = paramSearch(X_train, y_train)
+compareAlgos(X_test, y_test, bestTreeFeat, bestNnFeat)
 
 print('\nTree Params: ' + str(bestTreeFeat))
 print('NN Params: ' + str(bestNnFeat))
