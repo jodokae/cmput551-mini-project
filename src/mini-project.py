@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.dummy import DummyClassifier
 from sklearn.preprocessing import Imputer
 from sklearn.preprocessing import scale
 from sklearn.metrics import confusion_matrix
@@ -82,7 +83,7 @@ def paramSearch(X, y):
     nnParams = [{
         'activation':['logistic'],
         #'hidden_layer_sizes':[(10,), (50,), (100,)],
-        'alpha':[1e-4, 1e-3, 1e-2],
+        #'alpha':[1e-4, 1e-3, 1e-2],
         #'learning_rate_init':[1e-3, 1e-2, 1e-1],
         #'beta_1':[0.1, 0.5, 0.9], 
         #'beta_2':[0.1, 0.5, 0.9]
@@ -142,86 +143,51 @@ def splitData(X, y):
 
     return (X_learn, X_test, y_learn, y_test)
     
-def compareAlgos(X, y, treeParams, nnParams):
-    print ('Splitting Data')
-
+def compareAlgos(X, y, numruns, treeParams, nnParams):
     X_learn, X_test, y_learn, y_test = splitData(X, y)
     
-    meanMatrix = np.zeros((5, 4))
-    bayesMatrix = np.zeros((5, 4))
-    treeMatrix = np.zeros((5, 4))
-    nnMatrix = np.zeros((5, 4))
+    numruns = 5
     
-    for split in range(5):
-        print('Run ' + str(split+1) + '/' + str(5))       
-        
-        #print('Mean')
-
-        pred = 0 if ((y_learn[split] == 0).sum()) > ((y_learn[split] ==1).sum()) else 1
-        y_pred = np.zeros(y_test[split].shape) + pred
-        
-        tn, fp, fn, tp = confusion_matrix(y_test[split], y_pred).ravel()
+    algorithms = [
+        DummyClassifier(strategy='most_frequent'),
+        GaussianNB(),
+        DecisionTreeClassifier(**treeParams),
+        MLPClassifier(**nnParams)
+    ]
     
-        meanMatrix[split][0] = tp
-        meanMatrix[split][1] = fp
-        meanMatrix[split][2] = fn
-        meanMatrix[split][3] = tn
+    numalgos = len(algorithms)
     
+    confusionMatrix = np.zeros((numalgos, numruns, 4))
         
-                    
-        #print('Gaussian Naive Bayes')
-
-        gnb = GaussianNB()
-        tn, fp, fn, tp = learnAndPredict(gnb, X_learn[split], y_learn[split], X_test[split], y_test[split])
-          
-        bayesMatrix[split][0] = tp
-        bayesMatrix[split][1] = fp
-        bayesMatrix[split][2] = fn
-        bayesMatrix[split][3] = tn
+    for split in range(numruns):
+        print('Run ' + str(split+1) + '/' + str(numruns))   
         
-        #print('Decision Tree Gini')   
-                
-                
-        clf = DecisionTreeClassifier(**treeParams)
+        for indexA, algo in enumerate(algorithms):    
+        
+            tn, fp, fn, tp = learnAndPredict(algo, X_learn[split], y_learn[split], X_test[split], y_test[split])
+        
+            confusionMatrix[indexA][split][0] = tp
+            confusionMatrix[indexA][split][1] = fp
+            confusionMatrix[indexA][split][2] = fn
+            confusionMatrix[indexA][split][3] = tn
+        
     
-        tn, fp, fn, tp = learnAndPredict(clf, X_learn[split], y_learn[split], X_test[split], y_test[split])
-                            
-        treeMatrix[split][0] = tp
-        treeMatrix[split][1] = fp
-        treeMatrix[split][2] = fn
-        treeMatrix[split][3] = tn
-                   
-        
-        #print('Neural Net')
-        
-        clf = MLPClassifier(**nnParams)
-        
-        tn, fp, fn, tp = learnAndPredict(clf, X_learn[split], y_learn[split], X_test[split], y_test[split])
-    
-        nnMatrix[split][0] = tp
-        nnMatrix[split][1] = fp
-        nnMatrix[split][2] = fn
-        nnMatrix[split][3] = tn
-
     print('\nMean')
-    printMeanedMatrix(meanMatrix)
+    printMeanedMatrix(confusionMatrix[0])
     print('\nBayes')
-    printMeanedMatrix(bayesMatrix)
+    printMeanedMatrix(confusionMatrix[1])
     print('\nTree')
-    printMeanedMatrix(treeMatrix)
+    printMeanedMatrix(confusionMatrix[2])
     print('\nNeural Network')
-    printMeanedMatrix(nnMatrix)
+    printMeanedMatrix(confusionMatrix[3])
     
 
 
-print('Search for best Parameters')
-#(bestTreeFeat, bestNnFeat) = run(True, False, 5)
-#print('Evaluate Parameters on Full Dataset')
-#run(True, True, 5, False, bestTreeFeat, bestNnFeat)
-
+print('Search for best parameters')
 (X_train, X_test, y_train, y_test) = loadAndSplit(False)
 (bestTreeFeat, bestNnFeat) = paramSearch(X_train, y_train)
-compareAlgos(X_test, y_test, bestTreeFeat, bestNnFeat)
+print('Run with best parameters')
+compareAlgos(X_test, y_test, 5, bestTreeFeat, bestNnFeat)
 
 print('\nTree Params: ' + str(bestTreeFeat))
 print('NN Params: ' + str(bestNnFeat))
