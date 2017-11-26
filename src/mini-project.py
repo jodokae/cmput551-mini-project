@@ -80,11 +80,9 @@ def load(full):
     
     return (X, y)
     
-
-def run(fullData, printResults, numruns, paramSearch=True, bestTreeParams={}, bestNeuralParams={}):
-
+def prepareData(fullData, numruns):
     X, y = load(fullData)
-
+    
     print ('Splitting Data')
 
     sss = StratifiedShuffleSplit(n_splits=numruns, test_size=0.1)
@@ -100,6 +98,11 @@ def run(fullData, printResults, numruns, paramSearch=True, bestTreeParams={}, be
         y_learn.append(y[train_index])
         y_test.append(y[test_index])
 
+    return (X_learn, X_test, y_learn, y_test)
+
+def run(fullData, printResults, numruns, paramSearch=True, bestTreeParams={}, bestNeuralParams={}):
+
+    X_learn, X_test, y_learn, y_test = prepareData(fullData, numruns)
 
     if paramSearch == True:
         treeParams = list(dict_product(dict(
@@ -107,19 +110,19 @@ def run(fullData, printResults, numruns, paramSearch=True, bestTreeParams={}, be
             splitter=['random'],
             random_state=[None],
             max_depth=[1, 10, 100], 
-            #min_samples_split=[1e-5, 1e-4, 1e-3], 
-            #min_samples_leaf=[1e-5, 1e-4, 1e-3],
-            #min_weight_fraction_leaf=[1e-5, 1e-4, 1e-3],
+            min_samples_split=[1e-5, 1e-4, 1e-3], 
+            min_samples_leaf=[1e-5, 1e-4, 1e-3],
+            min_weight_fraction_leaf=[1e-5, 1e-4, 1e-3],
             max_features=['sqrt', 'log2'],
-            #max_leaf_nodes=[100, 1000, 10000]
+            max_leaf_nodes=[100, 1000, 10000]
         )))
         nnParams = list(dict_product(dict(
             activation=['logistic'],
             hidden_layer_sizes=[(10,), (50,), (100,)],
-            #alpha=[1e-4, 1e-3, 1e-2],
-            #learning_rate_init=[1e-3, 1e-2, 1e-1],
-            #beta_1=[0.1, 0.5, 0.9], 
-            #beta_2=[0.1, 0.5, 0.9]
+            alpha=[1e-4, 1e-3, 1e-2],
+            learning_rate_init=[1e-3, 1e-2, 1e-1],
+            beta_1=[0.1, 0.5, 0.9], 
+            beta_2=[0.1, 0.5, 0.9]
         )))
     else:
         treeParams = [bestTreeParams]
@@ -140,12 +143,11 @@ def run(fullData, printResults, numruns, paramSearch=True, bestTreeParams={}, be
     treeMatrix = np.zeros((numruns, 4))
     nnMatrix = np.zeros((numruns, 4))
 
-    print ('Comp: 0 / 1: ' + str((y == 0).sum() / (y == 1).sum()))
+    print ('Comp: 0 / 1: ' + str((y_test[0] == 0).sum() / (y_test[0] == 1).sum()))
 
     for split in range(numruns):
 
-        print('Run ' + str(split+1) + '/' + str(numruns))
-        
+        print('Run ' + str(split+1) + '/' + str(numruns))       
         
         print('Mean')
 
@@ -267,8 +269,10 @@ def run(fullData, printResults, numruns, paramSearch=True, bestTreeParams={}, be
     return(bestTreeFeat, bestNnFeat)
 
 
-(bestTreeFeat, bestNnFeat) = run(False, False, 1)
-run(False, True, 2, False, bestTreeFeat, bestNnFeat)
+print('Search for best Parameters')
+(bestTreeFeat, bestNnFeat) = run(False, False, 5)
+print('Evaluate Parameters on Full Dataset')
+run(True, True, 5, False, bestTreeFeat, bestNnFeat)
 
 print('\nTree Params: ' + str(bestTreeFeat))
 print('NN Params: ' + str(bestNnFeat))
