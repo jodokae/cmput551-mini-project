@@ -7,9 +7,11 @@ from prettytable import PrettyTable
 
 def printMeanedMatrix(matrix):
     means = np.mean(matrix, axis=0)
-    printMatrix(means[0], means[1], means[2], means[3])
+    var = np.var(matrix, axis=0)
+    printMatrix(means[0], means[1], means[2], means[3], 
+        var[0], var[1], var[2], var[3])
 
-def printMatrix(tp, fp, fn, tn):
+def printMatrix(tp, fp, fn, tn, tp_v, fp_v, fn_v, tn_v):
     total = tp + fp + fn + tn
     correctLabeled = tp + tn
     acc = correctLabeled / total
@@ -18,13 +20,16 @@ def printMatrix(tp, fp, fn, tn):
     
     x = PrettyTable()
     x.field_names = ["", "True (Real)", "False (Real)", "Sum"]
-    x.add_row(["True (Pred)",tp, fp, tp+fp])
-    x.add_row(["False (Pred)",fn, tn, fn + tn])
-    x.add_row(["Sum", tp+fn, fp+tn, total])
+    x.add_row(["True (Pred)",meanVarToString(tp, tp_v), meanVarToString(fp, fp_v), meanVarToString(tp+fp, tp_v+fp_v)])
+    x.add_row(["False (Pred)",meanVarToString(fn, fn_v), meanVarToString(tn, tn_v), meanVarToString(fn+tn, fn_v+tn_v)])
+    x.add_row(["Sum", meanVarToString(tp+fn, 0), meanVarToString(fp + tn, 0), meanVarToString(total, 0)])
     print(x)
     
     print('Acc: ' + str(acc))
     
+    
+def meanVarToString(mean, var):
+    return str(mean) + ' +- ' + str(round(np.sqrt(var), 2))
     
 def load(full):
     print ('Loading Data')

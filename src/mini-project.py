@@ -11,22 +11,22 @@ def paramSearch(X, y):
 
     nnParams = [{
         'activation':['logistic'],
-        #'hidden_layer_sizes':[(10,), (50,), (100,)],
-        #'alpha':[1e-4, 1e-3, 1e-2],
-        #'learning_rate_init':[1e-3, 1e-2, 1e-1],
-        #'beta_1':[0.1, 0.5, 0.9], 
-        #'beta_2':[0.1, 0.5, 0.9]
+        'hidden_layer_sizes':[(10,), (50,), (100,)],
+        'alpha':[1e-4, 1e-3, 1e-2],
+        'learning_rate_init':[1e-3, 1e-2, 1e-1],
+        'beta_1':[0.1, 0.5, 0.9], 
+        'beta_2':[0.1, 0.5, 0.9]
         }]
     
     treeParams = [{'criterion':['gini'],
-            'splitter':['random'],
-            'random_state':[None],
-            #'max_depth':[1, 10, 100], 
-            #'min_samples_split':[1e-5, 1e-4, 1e-3], 
-            #'min_samples_leaf':[1e-5, 1e-4, 1e-3],
-            #'min_weight_fraction_leaf':[1e-5, 1e-4, 1e-3],
-            'max_features':['sqrt', 'log2'],
-            #'max_leaf_nodes':[100, 1000, 10000]
+        'splitter':['random'],
+        'random_state':[None],
+        'max_depth':[1, 10, 100], 
+        'min_samples_split':[1e-5, 1e-4, 1e-3], 
+        'min_samples_leaf':[1e-5, 1e-4, 1e-3],
+        'min_weight_fraction_leaf':[1e-5, 1e-4, 1e-3],
+        'max_features':['sqrt', 'log2'],
+        'max_leaf_nodes':[100, 1000, 10000]
         }]
     
     print('Grid Search for Tree')
@@ -50,9 +50,7 @@ def paramSearchCV(clf, X, y):
 
 def compareAlgos(X, y, numruns, treeParams, nnParams):
     X_learn, X_test, y_learn, y_test = utils.splitData(X, y)
-    
-    numruns = 5
-    
+        
     algorithms = [
         DummyClassifier(strategy='most_frequent'),
         GaussianNB(),
@@ -67,7 +65,8 @@ def compareAlgos(X, y, numruns, treeParams, nnParams):
     for split in range(numruns):
         print('Run ' + str(split+1) + '/' + str(numruns))   
         
-        for indexA, algo in enumerate(algorithms):    
+        for indexA, algo in enumerate(algorithms): 
+            print(algo)   
         
             algo.fit(X_learn[split], y_learn[split])
 
@@ -92,9 +91,8 @@ def compareAlgos(X, y, numruns, treeParams, nnParams):
     
 
 ### MAIN ###
-fullDataSet = False
+fullDataSet = True
 print('Use complete Dataset: ' + str(fullDataSet))
-
 
 print('Search for best parameters')
 
