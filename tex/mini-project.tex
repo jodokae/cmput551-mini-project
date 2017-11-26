@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt]{report}
+\documentclass[a4paper,11pt]{article}
 
 \usepackage{graphicx}
 \usepackage[utf8x]{inputenc}
@@ -41,33 +41,65 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.5ex plus0.5ex minus0.5ex}
 
-Predict Build Outcome
-	Explain Why
-	Dataset
-Background
-	CI Travis
-	Algorithms
-	Evalution techniques
-Dataset
-	Size
-	Features
-Methodology
-	Extract Dataset (Change Set)
-	Missing Features
-	
-	Algorithms
-	Parameter Selection
-	Splits
-Results
-	Optimal Parameters
-	Measurements
-	Statistics
-Summary \& Threats
-	
-	
+\begin{abstract}
+	abstract-text
+\end{abstract}
+
+\section{Introduction}
+
+In modern software engineering using continuous integration is evolved to a best practice. Its goal is it to archive higher productivity while developing and reduce the number of faults and bugs. Thanks to its interweaving with GitHub, TravisCI is commonly used for open source projects. Therefore, there a lots of continuous integration data available. It has be shown that broken builds delay a project significantly \cite{CIDelay}, hence the prediction if a build will fail and why can increase development pace. With this information it is possible to develop tools and techniques which reduce the causes of failing builds. 
+
+In previous researches it was shown that there are correlation between build metrics and outcome \cite{bibid}, and that cascading classifiers work well for predicting the build outcome using  \cite{bibid}. Another research tried to predict build outcome with decision trees also with using data from previous builds. This work wants to try a simpler approach and see if it is possible to predict the build outcome only using the currents build information and its associated commits. For this the TravisTorrent \cite{travisTorrent} dataset analyzed in order to classify the build outcome. For this, three different algorithms, naive bayes, neural networks and decision trees, are used to classify this dataset and it is evaluated if one of them is able to accurately learn this problem. 
+
+\section{Background}
+
+Travis
+
+\subsection{Dataset}
+
+Size, Features, Where its from stuff
+
+\subsection{Algorithms}
+
+Tree, Bayes, MostFrequent, NN
+
+\subsection{Evaluation techniques}
+
+\section{Methodology}
+
+Extraction of Dataset, which features used, missing features
+
+50:50 Split
+
+\subsection{Parameter}
+
+Which parameters, how checked
 
 
-\cite{msr17challenge}
+\subsection{Cross Algorithms}
+
+Other half of data
+
+\subsection{Statistics}
+
+Which statistics to cross compare
+
+\section{Results}
+
+\subsection{Parameter Findings}
+
+\subsection{Result of Set}
+
+\subsection{Best Algorithm}
+
+\section{Threats / Problems}
+
+\subsection{Not used Parameters}
+\subsection{Runtime}
+\subsection{Dataset per se}
+
+\section{Conclusion \& Implication}	
+
 
 \bibliographystyle{ieeetr}
 \bibliography{literature}
