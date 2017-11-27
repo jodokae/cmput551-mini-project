@@ -49,7 +49,7 @@ def paramSearchCV(clf, X, y):
 
 
 def compareAlgos(X, y, numruns, treeParams, nnParams):
-    X_learn, X_test, y_learn, y_test = utils.splitData(X, y)
+    X_learn, X_test, y_learn, y_test = utils.splitData(X, y, numruns)
         
     algorithms = [
         DummyClassifier(strategy='most_frequent'),
@@ -90,6 +90,7 @@ def compareAlgos(X, y, numruns, treeParams, nnParams):
     utils.printMeanedMatrix(confusionMatrix[3])
     
     np.save('confusion.npy', confusionMatrix)
+    print(confusionMatrix)
     
 
 ### MAIN ###

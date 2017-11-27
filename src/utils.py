@@ -55,10 +55,10 @@ def loadAndSplit(fullSet):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, stratify=y)
     return (X_train, X_test, y_train, y_test)
     
-def splitData(X, y):
+def splitData(X, y, numruns):
     print ('Splitting Data')
 
-    sss = StratifiedShuffleSplit(n_splits=5, test_size=0.1)
+    sss = StratifiedShuffleSplit(n_splits=numruns, test_size=0.2)
 
     X_learn = []
     X_test = []
