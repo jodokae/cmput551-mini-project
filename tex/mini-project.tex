@@ -9,6 +9,7 @@
 \usepackage{xcolor}
 \usepackage{pdfpages}
 \usepackage[strict]{changepage}
+\usepackage{url}
 
 \pdfoptionpdfminorversion=6
 
@@ -53,34 +54,57 @@ In previous researches it was shown that there are correlation between build met
 
 \section{Background}
 
-Travis
+TravisCI is a continuous integration tool to automated compile, build, integrate and test GitHub projects. 
 
 \subsection{Dataset}
 
-Size, Features, Where its from stuff
+For the MSR 2017 challenge the dataset TravisTorrent was created. This study uses the version from January 11, 2017. It contains $3,702,595$ samples. A detailed explanation of all the features can be found on the homepage of TravisTorrent\footnote{\url{https://travistorrent.testroots.org/page_dataformat/}}. Because not all features are useful for this study, the number of features were restricted to some features. A list of features can be found under table \ref{featureTable}. Only builds that were either successful, erroneous or failed were considered. Successful builds were considered as class 1, or true, while the other builds were marked as failed, i. e. class 0, or false. Aborted or canceled builds were ignored, therefor only $2,500,756$ builds were considered in the final dataset. In the final dataset $41.6\%$ of the builds did fail. 
+
+\input{features.tex}
+
+%Size, Features, Where its from stuff
 
 \subsection{Algorithms}
 
-Tree, Bayes, MostFrequent, NN
+As a baseline an algorithm is used which labels all data to the most frequent class. Then three supervised classification algorithms are tried. 
+The first one is Naive Bayes which assumes every feature to be gaussian data. 
+The second one is a neural net with one hidden layer and the logistic activation function. As solver for the weight optimization adam\cite{adam}, an optimized stochastic gradient descent, is used. The batchsize is determined automatic, the maximum epochs are set to $200$ and the dataset is shuffle between each epoch.
+As third algorithm a decision tree is used. A decision tree classifier is a tree where the sample switches to the left or right child depending on its value for a feature until it is classified in a leaf node. The criterion for splitting is set to the gini impurity, for performance it takes the best random split. 
+
+%Tree, Bayes, MostFrequent, NN
 
 \subsection{Evaluation techniques}
 
+%TODO
+
 \section{Methodology}
 
-Extraction of Dataset, which features used, missing features
+The dataset is stored in a MySQL database. From there all samples are extracted and stored in a matrix. The build outcome is put into a vector $y$ with the value $1$ if the build was successful and $0$ otherwise. The language and previous build feature are stored in a vector; for example the language 'java' is encoded into $[1,0,0]$. The date features are split up into month, day, daytime in seconds and weekday as numbers. 
+Not every sample contains all features. The missing features are set to the mean, so it does not impact the classification.
 
-50:50 Split
+The actual learning is divided into two parts. First the best parameters for the neural network and the decision tree have to be learned, and afterwards the algorithms need to be compared. Because the dataset is big enough, for the both tasks the dataset is split up in two equal halves. The split and all following splits are done stratified. This complete split is used so that the parameter search does not bias the inter algorithm algorithms. 
+
+%Extraction of Dataset, which features used, missing features
+
+%50:50 Split
 
 \subsection{Parameter}
 
-Which parameters, how checked
+For looking for the best parameters the first half of the dataset is used for an exhaustive grid search. This cross validation learns a model for every possible combination of the parameters. This is done on a K-Fold with $k=5$. A list of all tried parameters can be found in tables \ref{paramTable} and \ref{paramTable2}. Accuracy is used as scoring method. 
+
+
+%Which parameters, how checked
 
 
 \subsection{Cross Algorithms}
 
-Other half of data
+The other half of the data is used to compare the different algorithms. For that the dataset is split up into five random sets, where the size of the test set is $10\%$. On this, every of the three and the baseline algorithm is run. For evaluation the confusion matrix is saved for every run. Then the means and standard deviation over the runs is computed for every algorithm.
+
+%Other half of data
 
 \subsection{Statistics}
+
+%TODO
 
 Which statistics to cross compare
 
