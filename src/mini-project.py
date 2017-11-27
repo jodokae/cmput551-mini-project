@@ -78,7 +78,7 @@ def compareAlgos(X, y, numruns, treeParams, nnParams):
             confusionMatrix[indexA][split][1] = fp
             confusionMatrix[indexA][split][2] = fn
             confusionMatrix[indexA][split][3] = tn
-        
+            
     
     print('\nMean')
     utils.printMeanedMatrix(confusionMatrix[0])
@@ -88,6 +88,8 @@ def compareAlgos(X, y, numruns, treeParams, nnParams):
     utils.printMeanedMatrix(confusionMatrix[2])
     print('\nNeural Network')
     utils.printMeanedMatrix(confusionMatrix[3])
+    
+    np.save('confusion.npy', confusionMatrix)
     
 
 ### MAIN ###
@@ -103,9 +105,8 @@ print('\nTree Params: ' + str(bestTreeFeat))
 print('NN Params: ' + str(bestNnFeat))
 
 print('Run with best parameters')
-compareAlgos(X_test, y_test, 5, bestTreeFeat, bestNnFeat)
+compareAlgos(X_test, y_test, 10, bestTreeFeat, bestNnFeat)
 
 print('\nTree Params: ' + str(bestTreeFeat))
 print('NN Params: ' + str(bestNnFeat))
-
 
