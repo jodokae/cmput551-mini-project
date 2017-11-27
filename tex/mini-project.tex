@@ -43,7 +43,7 @@
 \setlength{\parskip}{1.5ex plus0.5ex minus0.5ex}
 
 \begin{abstract}
-	abstract-text
+	abstract-text %TODO
 \end{abstract}
 
 \section{Introduction}
@@ -73,14 +73,10 @@ As third algorithm a decision tree is used. A decision tree classifier is a tree
 
 %Tree, Bayes, MostFrequent, NN
 
-\subsection{Evaluation techniques}
-
-%TODO
-
 \section{Methodology}
 
-The dataset is stored in a MySQL database. From there all samples are extracted and stored in a matrix. The build outcome is put into a vector $y$ with the value $1$ if the build was successful and $0$ otherwise. The language and previous build feature are stored in a vector; for example the language 'java' is encoded into $[1,0,0]$. The date features are split up into month, day, daytime in seconds and weekday as numbers. 
-Not every sample contains all features. The missing features are set to the mean, so it does not impact the classification.
+The dataset is stored in a MySQL database. From there all samples are extracted and stored in a matrix. The build outcome is put into a vector $y$ with the value $1$ if the build was successful and $0$ otherwise. The language and previous build feature are stored in a vector; for example the language 'java' is encoded into $[1,0,0]$, while 'javascript' is encoded to $[0,1,0]$. The date features are split up into month, day, daytime in seconds and weekday as integers. 
+Since not every sample contains all features, the missing features are set to the mean, so it does not impact the classification.
 
 The actual learning is divided into two parts. First the best parameters for the neural network and the decision tree have to be learned, and afterwards the algorithms need to be compared. Because the dataset is big enough, for the both tasks the dataset is split up in two equal halves. The split and all following splits are done stratified. This complete split is used so that the parameter search does not bias the inter algorithm algorithms. 
 
@@ -104,9 +100,11 @@ The other half of the data is used to compare the different algorithms. For that
 
 \subsection{Statistics}
 
-%TODO
+The algorithms are compared using Welch's t-test, because the variances of the algorithms are different. The baseline algorithm has, as expected, a variance of 0, whereas in test runs the neural networks had generally a high standard deviation. As comparing metrics accuracy, sensitivity and specificity are used, in which the latter ones are equivalent to the AUC of the ROC curve. Those three metrics are used to give a general sense of how good the algorithms are performing and then in detail how good they are at predicting successful and failing builds separately. 
 
-Which statistics to cross compare
+The two tailed t-test is done pairwise for every algorithm with $\mu_0 = \mu_1$ and $\alpha=0.05$ to produce a ranking between the three (plus baseline) algorithm. 
+
+%Which statistics to cross compare
 
 \section{Results}
 
