@@ -1,29 +1,9 @@
 import numpy as np
 from scipy import stats
+from prettytable import PrettyTable
+from sklearn.metrics import auc
 
-confusion_matrix = np.array([[[  8.83100000e+04,   3.67280000e+04,   0.00000000e+00,   0.00000000e+00],
-  [  8.83100000e+04,   3.67280000e+04,   0.00000000e+00,   0.00000000e+00],
-  [  8.83100000e+04,   3.67280000e+04,   0.00000000e+00,   0.00000000e+00],
-  [  8.83100000e+04,   3.67280000e+04,   0.00000000e+00,   0.00000000e+00],
-  [  8.83100000e+04,   3.67280000e+04,   0.00000000e+00,   0.00000000e+00]],
-
- [[  8.68970000e+04,   3.56880000e+04,   1.41300000e+03,   1.04000000e+03],
-  [  8.68630000e+04,   3.56880000e+04,   1.44700000e+03,   1.04000000e+03],
-  [  8.68890000e+04,   3.56800000e+04,   1.42100000e+03,   1.04800000e+03],
-  [  8.69710000e+04,   3.57210000e+04,   1.33900000e+03,   1.00700000e+03],
-  [  8.69130000e+04,   3.56530000e+04,   1.39700000e+03,   1.07500000e+03]],
-
- [[  8.29720000e+04,   2.19870000e+04,   5.33800000e+03,   1.47410000e+04],
-  [  8.30720000e+04,   2.26720000e+04,   5.23800000e+03,   1.40560000e+04],
-  [  8.26100000e+04,   2.24560000e+04,   5.70000000e+03,   1.42720000e+04],
-  [  8.25210000e+04,   2.01800000e+04,   5.78900000e+03,   1.65480000e+04],
-  [  8.33530000e+04,   2.43630000e+04,   4.95700000e+03,   1.23650000e+04]],
-
- [[  8.81440000e+04,   3.66830000e+04,   1.66000000e+02,   4.50000000e+01],
-  [  8.77850000e+04,   3.66140000e+04,   5.25000000e+02,   1.14000000e+02],
-  [  8.67660000e+04,   3.64480000e+04,   1.54400000e+03,   2.80000000e+02],
-  [  1.00060000e+04,   7.19500000e+03,   7.83040000e+04,   2.95330000e+04],
-  [  5.09300000e+03,   4.22500000e+03,   8.32170000e+04,   3.25030000e+04]]])
+confusion_matrix = np.load('confusion.npy')
   
 # tpr = sensitivity
 tpr = confusion_matrix[:,:,0] / (confusion_matrix[:,:,0] + confusion_matrix[:,:,2])
@@ -34,14 +14,38 @@ total = confusion_matrix[:,:,0] + confusion_matrix[:,:,1] + confusion_matrix[:,:
 correctLabeled = confusion_matrix[:,:,0] + confusion_matrix[:,:,3]
 acc = correctLabeled / total
 
-print(acc)
 
-#print(tnr[2])
-#print(tnr[0])
+data = np.empty((3,acc.shape[0], acc.shape[1]))
+data[0] = acc
+data[1] = tpr
+data[2] = tnr
+label = ['Accurarcy', 'Sensitivity', 'Specificity']
+algorithms = ['Mean', 'Bayes', 'Tree', 'Neural Net']
 
-(t, p) = stats.ttest_ind(a=acc[0], b = acc[1], equal_var=False)
-print(str(t) + ' ' + str(p))
-
-(t, p) = stats.ttest_ind(a=acc[0], b = acc[1], equal_var=True)
-print(str(t) + ' ' + str(p))
+for metric in range(3):
+    print(label[metric])
+    x = PrettyTable()
+    y = PrettyTable()
+    x.field_names = [''] + algorithms
+    y.field_names = [''] + algorithms
+    for i in range(4):
+        row = [algorithms[i], '', '', '', '']
+        yrow = [algorithms[i], '', '', '', '']
+        for j in range(4):
+            #print(algorithms[i])
+            #print(algorithms[j])
+            (t, p) = stats.ttest_ind(a=data[metric][i], b = data[metric][j], equal_var=False)
+            row[j+1] = format(t, '.4g') + ' ' + format(p, '.3g')
+            
+            if p > 0.05 or np.isnan(p):
+                v = 'same'
+            elif t > 0:
+                v = 'better'
+            else:
+                v = 'worse'
+            yrow[j+1] = v
+        x.add_row(row)
+        y.add_row(yrow)
+    print(x)
+    print(y)
 
