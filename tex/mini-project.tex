@@ -10,6 +10,8 @@
 \usepackage{pdfpages}
 \usepackage[strict]{changepage}
 \usepackage{url}
+\usepackage{tabularx}
+\usepackage{float}
 
 \pdfoptionpdfminorversion=6
 
@@ -50,7 +52,7 @@
 
 In modern software engineering using continuous integration is evolved to a best practice. Its goal is it to archive higher productivity while developing and reduce the number of faults and bugs. Thanks to its interweaving with GitHub, TravisCI is commonly used for open source projects. Therefore, there a lots of continuous integration data available. It has be shown that broken builds delay a project significantly \cite{CIDelay}, hence the prediction if a build will fail and why can increase development pace. With this information it is possible to develop tools and techniques which reduce the causes of failing builds. 
 
-In previous researches it was shown that there are correlation between build metrics and outcome \cite{bibid}, and that cascading classifiers work well for predicting the build outcome using  \cite{bibid}. Another research tried to predict build outcome with decision trees also with using data from previous builds. This work wants to try a simpler approach and see if it is possible to predict the build outcome only using the currents build information and its associated commits. For this the TravisTorrent \cite{travisTorrent} dataset analyzed in order to classify the build outcome. For this, three different algorithms, naive bayes, neural networks and decision trees, are used to classify this dataset and it is evaluated if one of them is able to accurately learn this problem. 
+In previous researches it was shown that there are correlation between build metrics and outcome \cite{correlation}, and that cascading classifiers work well for predicting the build outcome \cite{cascade}. Another research tried to predict build outcome with decision trees also with using data from previous builds \cite{treeTimes}. This work wants to try a simpler approach and see if it is possible to predict the build outcome only using the currents build information and its associated commits. For this the TravisTorrent \cite{msr17challenge} dataset analyzed in order to classify the build outcome. For this, three different algorithms, naive bayes, neural networks and decision trees, are used to classify this dataset and it is evaluated if one of them is able to accurately learn this problem. 
 
 \section{Background}
 
@@ -59,8 +61,6 @@ TravisCI is a continuous integration tool to automated compile, build, integrate
 \subsection{Dataset}
 
 For the MSR 2017 challenge the dataset TravisTorrent was created. This study uses the version from January 11, 2017. It contains $3,702,595$ samples. A detailed explanation of all the features can be found on the homepage of TravisTorrent\footnote{\url{https://travistorrent.testroots.org/page_dataformat/}}. Because not all features are useful for this study, the number of features were restricted to some features. A list of features can be found under table \ref{featureTable}. Only builds that were either successful, erroneous or failed were considered. Successful builds were considered as class 1, or true, while the other builds were marked as failed, i. e. class 0, or false. Aborted or canceled builds were ignored, therefor only $2,500,756$ builds were considered in the final dataset. In the final dataset $41.6\%$ of the builds did fail. 
-
-\input{features.tex}
 
 %Size, Features, Where its from stuff
 
@@ -76,7 +76,7 @@ As third algorithm a decision tree is used. A decision tree classifier is a tree
 \section{Methodology}
 
 The dataset is stored in a MySQL database. From there all samples are extracted and stored in a matrix. The build outcome is put into a vector $y$ with the value $1$ if the build was successful and $0$ otherwise. The language and previous build feature are stored in a vector; for example the language 'java' is encoded into $[1,0,0]$, while 'javascript' is encoded to $[0,1,0]$. The date features are split up into month, day, daytime in seconds and weekday as integers. 
-Since not every sample contains all features, the missing features are set to the mean, so it does not impact the classification.
+Since not every sample contains all features, the missing features are set to the respective mean, so it does not impact the classification.
 
 The actual learning is divided into two parts. First the best parameters for the neural network and the decision tree have to be learned, and afterwards the algorithms need to be compared. Because the dataset is big enough, for the both tasks the dataset is split up in two equal halves. The split and all following splits are done stratified. This complete split is used so that the parameter search does not bias the inter algorithm algorithms. 
 
@@ -86,8 +86,9 @@ The actual learning is divided into two parts. First the best parameters for the
 
 \subsection{Parameter}
 
-For looking for the best parameters the first half of the dataset is used for an exhaustive grid search. This cross validation learns a model for every possible combination of the parameters. This is done on a K-Fold with $k=5$. A list of all tried parameters can be found in tables \ref{paramTable} and \ref{paramTable2}. Accuracy is used as scoring method. 
-
+For looking for the best parameters the first half of the dataset is used for an exhaustive grid search. This cross validation learns a model for every possible combination of the parameters. This is done on a K-Fold with $k=5$. A list of all tried parameters can be found in tables \ref{TreeParams} and \ref{NNParams}. 
+A detailed description of all possible parameters can be found in the documentation of sklearn for the decision tree\footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html}} and the neural network classifier\footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html}}. 
+Accuracy is used as scoring method. 
 
 %Which parameters, how checked
 
@@ -114,17 +115,31 @@ The two tailed t-test is done pairwise for every algorithm with $\mu_0 = \mu_1$ 
 
 \subsection{Best Algorithm}
 
-\section{Threats / Problems}
+\section{Threats to validity}
 
-\subsection{Not used Parameters}
-\subsection{Runtime}
-\subsection{Dataset per se}
+Of course not everything could be checked which can influence the impact of the results. First of all, because of lack of time (one run of the complete methodology takes over ten hours on a standard laptop), the complete project, i. e. find parameters with cross validation and compare algorithms on different splits, was only done once and not on separate splits of the complete dataset. This was also necessary, because different runs would produce different optimal parameters which would then harden the conclusion of the comparison. Because the dataset is quite large, this issue is considered to be acceptable. 
+
+Another runtime related problem is, that not all possible parameters were considered. For example, this work restricts itself to the gini impurity for the decision tree. Hence, it cannot be generalized that decision trees are strictly better than neural networks for this dataset, but only under the tested parameters. Better is only regarding accuracy, sensitivity and specificity and not considering runtime or other metrics at all. Because this work only wants to compare the possibility of predicting this type of data at all, runtime was considered a less important aspect. 
+
+Since the dataset only is a small snapshot of all CI projects out there, especially restricted only to three programming languages and only open source projects, it cannot be generally said that build outcomes are predictable. But it is believed, that the considered features do not differ significantly between closed and open source projects. Furthermore, the dataset contained missing data for some features, which may impact the outcome of the analysis. This was mitigated due to preprocessing of the data. In future, it might be interesting to see if the accuracy of the prediction can be improved with feature selection. 
+
 
 \section{Conclusion \& Implication}	
 
 
 \bibliographystyle{ieeetr}
 \bibliography{literature}
+
+\appendix
+
+\section{Features}
+
+\input{features.tex}
+
+\section{Parameter}
+
+\input{paramsTree.tex}
+\input{paramsNn.tex}
 
 
 \end{document}
