@@ -1,0 +1,265 @@
+Use complete Dataset: True
+Search for best parameters
+Loading Data
+Encoding Data
+Grid Search for Tree
+Fitting 5 folds for each of 486 candidates, totalling 2430 fits
+{'min_weight_fraction_leaf': 1e-05, 'splitter': 'random', 'max_features': 'log2', 'max_leaf_nodes': 10000, 'min_samples_leaf': 1e-05, 'min_samples_split': 1e-05, 'criterion': 'gini', 'max_depth': 100, 'random_state': None}: 0.77625486053
+Grid Search for Neural Net
+Fitting 5 folds for each of 243 candidates, totalling 1215 fits
+{'hidden_layer_sizes': (100,), 'beta_1': 0.5, 'alpha': 0.0001, 'activation': 'logistic', 'beta_2': 0.9, 'learning_rate_init': 0.001}: 0.707814756818
+
+Tree Params: {'min_weight_fraction_leaf': 1e-05, 'splitter': 'random', 'max_features': 'log2', 'max_leaf_nodes': 10000, 'min_samples_leaf': 1e-05, 'min_samples_split': 1e-05, 'criterion': 'gini', 'max_depth': 100, 'random_state': None}
+NN Params: {'hidden_layer_sizes': (100,), 'beta_1': 0.5, 'alpha': 0.0001, 'activation': 'logistic', 'beta_2': 0.9, 'learning_rate_init': 0.001}
+Run with best parameters
+Splitting Data
+Run 1/10
+DummyClassifier(constant=None, random_state=None, strategy='most_frequent')
+GaussianNB(priors=None)
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=100,
+            max_features='log2', max_leaf_nodes=10000,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1e-05, min_samples_split=1e-05,
+            min_weight_fraction_leaf=1e-05, presort=False,
+            random_state=None, splitter='random')
+MLPClassifier(activation='logistic', alpha=0.0001, batch_size='auto',
+       beta_1=0.5, beta_2=0.9, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(100,), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       nesterovs_momentum=True, power_t=0.5, random_state=None,
+       shuffle=True, solver='adam', tol=0.0001, validation_fraction=0.1,
+       verbose=False, warm_start=False)
+Run 2/10
+DummyClassifier(constant=None, random_state=None, strategy='most_frequent')
+GaussianNB(priors=None)
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=100,
+            max_features='log2', max_leaf_nodes=10000,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1e-05, min_samples_split=1e-05,
+            min_weight_fraction_leaf=1e-05, presort=False,
+            random_state=None, splitter='random')
+MLPClassifier(activation='logistic', alpha=0.0001, batch_size='auto',
+       beta_1=0.5, beta_2=0.9, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(100,), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       nesterovs_momentum=True, power_t=0.5, random_state=None,
+       shuffle=True, solver='adam', tol=0.0001, validation_fraction=0.1,
+       verbose=False, warm_start=False)
+Run 3/10
+DummyClassifier(constant=None, random_state=None, strategy='most_frequent')
+GaussianNB(priors=None)
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=100,
+            max_features='log2', max_leaf_nodes=10000,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1e-05, min_samples_split=1e-05,
+            min_weight_fraction_leaf=1e-05, presort=False,
+            random_state=None, splitter='random')
+MLPClassifier(activation='logistic', alpha=0.0001, batch_size='auto',
+       beta_1=0.5, beta_2=0.9, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(100,), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       nesterovs_momentum=True, power_t=0.5, random_state=None,
+       shuffle=True, solver='adam', tol=0.0001, validation_fraction=0.1,
+       verbose=False, warm_start=False)
+Run 4/10
+DummyClassifier(constant=None, random_state=None, strategy='most_frequent')
+GaussianNB(priors=None)
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=100,
+            max_features='log2', max_leaf_nodes=10000,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1e-05, min_samples_split=1e-05,
+            min_weight_fraction_leaf=1e-05, presort=False,
+            random_state=None, splitter='random')
+MLPClassifier(activation='logistic', alpha=0.0001, batch_size='auto',
+       beta_1=0.5, beta_2=0.9, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(100,), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       nesterovs_momentum=True, power_t=0.5, random_state=None,
+       shuffle=True, solver='adam', tol=0.0001, validation_fraction=0.1,
+       verbose=False, warm_start=False)
+Run 5/10
+DummyClassifier(constant=None, random_state=None, strategy='most_frequent')
+GaussianNB(priors=None)
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=100,
+            max_features='log2', max_leaf_nodes=10000,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1e-05, min_samples_split=1e-05,
+            min_weight_fraction_leaf=1e-05, presort=False,
+            random_state=None, splitter='random')
+MLPClassifier(activation='logistic', alpha=0.0001, batch_size='auto',
+       beta_1=0.5, beta_2=0.9, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(100,), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       nesterovs_momentum=True, power_t=0.5, random_state=None,
+       shuffle=True, solver='adam', tol=0.0001, validation_fraction=0.1,
+       verbose=False, warm_start=False)
+Run 6/10
+DummyClassifier(constant=None, random_state=None, strategy='most_frequent')
+GaussianNB(priors=None)
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=100,
+            max_features='log2', max_leaf_nodes=10000,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1e-05, min_samples_split=1e-05,
+            min_weight_fraction_leaf=1e-05, presort=False,
+            random_state=None, splitter='random')
+MLPClassifier(activation='logistic', alpha=0.0001, batch_size='auto',
+       beta_1=0.5, beta_2=0.9, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(100,), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       nesterovs_momentum=True, power_t=0.5, random_state=None,
+       shuffle=True, solver='adam', tol=0.0001, validation_fraction=0.1,
+       verbose=False, warm_start=False)
+Run 7/10
+DummyClassifier(constant=None, random_state=None, strategy='most_frequent')
+GaussianNB(priors=None)
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=100,
+            max_features='log2', max_leaf_nodes=10000,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1e-05, min_samples_split=1e-05,
+            min_weight_fraction_leaf=1e-05, presort=False,
+            random_state=None, splitter='random')
+MLPClassifier(activation='logistic', alpha=0.0001, batch_size='auto',
+       beta_1=0.5, beta_2=0.9, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(100,), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       nesterovs_momentum=True, power_t=0.5, random_state=None,
+       shuffle=True, solver='adam', tol=0.0001, validation_fraction=0.1,
+       verbose=False, warm_start=False)
+Run 8/10
+DummyClassifier(constant=None, random_state=None, strategy='most_frequent')
+GaussianNB(priors=None)
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=100,
+            max_features='log2', max_leaf_nodes=10000,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1e-05, min_samples_split=1e-05,
+            min_weight_fraction_leaf=1e-05, presort=False,
+            random_state=None, splitter='random')
+MLPClassifier(activation='logistic', alpha=0.0001, batch_size='auto',
+       beta_1=0.5, beta_2=0.9, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(100,), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       nesterovs_momentum=True, power_t=0.5, random_state=None,
+       shuffle=True, solver='adam', tol=0.0001, validation_fraction=0.1,
+       verbose=False, warm_start=False)
+Run 9/10
+DummyClassifier(constant=None, random_state=None, strategy='most_frequent')
+GaussianNB(priors=None)
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=100,
+            max_features='log2', max_leaf_nodes=10000,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1e-05, min_samples_split=1e-05,
+            min_weight_fraction_leaf=1e-05, presort=False,
+            random_state=None, splitter='random')
+MLPClassifier(activation='logistic', alpha=0.0001, batch_size='auto',
+       beta_1=0.5, beta_2=0.9, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(100,), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       nesterovs_momentum=True, power_t=0.5, random_state=None,
+       shuffle=True, solver='adam', tol=0.0001, validation_fraction=0.1,
+       verbose=False, warm_start=False)
+Run 10/10
+DummyClassifier(constant=None, random_state=None, strategy='most_frequent')
+GaussianNB(priors=None)
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=100,
+            max_features='log2', max_leaf_nodes=10000,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1e-05, min_samples_split=1e-05,
+            min_weight_fraction_leaf=1e-05, presort=False,
+            random_state=None, splitter='random')
+MLPClassifier(activation='logistic', alpha=0.0001, batch_size='auto',
+       beta_1=0.5, beta_2=0.9, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(100,), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       nesterovs_momentum=True, power_t=0.5, random_state=None,
+       shuffle=True, solver='adam', tol=0.0001, validation_fraction=0.1,
+       verbose=False, warm_start=False)
+
+Mean
+Number of mislabeled points out of a total 250076 points : 73456
++--------------+-----------------+----------------+-----------------+
+|              |   True (Real)   |  False (Real)  |       Sum       |
++--------------+-----------------+----------------+-----------------+
+| True (Pred)  | 176620.0 +- 0.0 | 73456.0 +- 0.0 | 250076.0 +- 0.0 |
+| False (Pred) |    0.0 +- 0.0   |   0.0 +- 0.0   |    0.0 +- 0.0   |
+|     Sum      | 176620.0 +- 0.0 | 73456.0 +- 0.0 | 250076.0 +- 0.0 |
++--------------+-----------------+----------------+-----------------+
+Acc: 0.70626529535
+
+Bayes
+Number of mislabeled points out of a total 250076 points : 74142
++--------------+-------------------+-------------------+--------------------+
+|              |    True (Real)    |    False (Real)   |        Sum         |
++--------------+-------------------+-------------------+--------------------+
+| True (Pred)  | 173878.9 +- 386.2 | 71401.8 +- 240.28 | 245280.7 +- 454.84 |
+| False (Pred) |  2741.1 +- 386.2  |  2054.2 +- 240.28 |  4795.3 +- 454.84  |
+|     Sum      |  176620.0 +- 0.0  |   73456.0 +- 0.0  |  250076.0 +- 0.0   |
++--------------+-------------------+-------------------+--------------------+
+Acc: 0.703518530367
+
+Tree
+Number of mislabeled points out of a total 250076 points : 59706
++--------------+---------------------+--------------------+---------------------+
+|              |     True (Real)     |    False (Real)    |         Sum         |
++--------------+---------------------+--------------------+---------------------+
+| True (Pred)  | 167434.8 +- 1617.15 | 50521.5 +- 4287.92 | 217956.3 +- 4582.73 |
+| False (Pred) |  9185.2 +- 1617.15  | 22934.5 +- 4287.92 |  32119.7 +- 4582.73 |
+|     Sum      |   176620.0 +- 0.0   |   73456.0 +- 0.0   |   250076.0 +- 0.0   |
++--------------+---------------------+--------------------+---------------------+
+Acc: 0.761245781282
+
+Neural Network
+Number of mislabeled points out of a total 250076 points : 73775
++--------------+---------------------+--------------------+---------------------+
+|              |     True (Real)     |    False (Real)    |         Sum         |
++--------------+---------------------+--------------------+---------------------+
+| True (Pred)  | 174003.2 +- 1766.19 | 71158.5 +- 1440.57 | 245161.7 +- 2279.19 |
+| False (Pred) |  2616.8 +- 1766.19  | 2297.5 +- 1440.57  |  4914.3 +- 2279.19  |
+|     Sum      |   176620.0 +- 0.0   |   73456.0 +- 0.0   |   250076.0 +- 0.0   |
++--------------+---------------------+--------------------+---------------------+
+Acc: 0.704988483501
+[[[  1.76620000e+05   7.34560000e+04   0.00000000e+00   0.00000000e+00]
+  [  1.76620000e+05   7.34560000e+04   0.00000000e+00   0.00000000e+00]
+  [  1.76620000e+05   7.34560000e+04   0.00000000e+00   0.00000000e+00]
+  [  1.76620000e+05   7.34560000e+04   0.00000000e+00   0.00000000e+00]
+  [  1.76620000e+05   7.34560000e+04   0.00000000e+00   0.00000000e+00]
+  [  1.76620000e+05   7.34560000e+04   0.00000000e+00   0.00000000e+00]
+  [  1.76620000e+05   7.34560000e+04   0.00000000e+00   0.00000000e+00]
+  [  1.76620000e+05   7.34560000e+04   0.00000000e+00   0.00000000e+00]
+  [  1.76620000e+05   7.34560000e+04   0.00000000e+00   0.00000000e+00]
+  [  1.76620000e+05   7.34560000e+04   0.00000000e+00   0.00000000e+00]]
+
+ [[  1.74085000e+05   7.15930000e+04   2.53500000e+03   1.86300000e+03]
+  [  1.74009000e+05   7.14610000e+04   2.61100000e+03   1.99500000e+03]
+  [  1.74023000e+05   7.15670000e+04   2.59700000e+03   1.88900000e+03]
+  [  1.74086000e+05   7.15370000e+04   2.53400000e+03   1.91900000e+03]
+  [  1.74024000e+05   7.13790000e+04   2.59600000e+03   2.07700000e+03]
+  [  1.73966000e+05   7.14460000e+04   2.65400000e+03   2.01000000e+03]
+  [  1.74003000e+05   7.14140000e+04   2.61700000e+03   2.04200000e+03]
+  [  1.73765000e+05   7.13750000e+04   2.85500000e+03   2.08100000e+03]
+  [  1.72751000e+05   7.07150000e+04   3.86900000e+03   2.74100000e+03]
+  [  1.74077000e+05   7.15310000e+04   2.54300000e+03   1.92500000e+03]]
+
+ [[  1.67121000e+05   5.48090000e+04   9.49900000e+03   1.86470000e+04]
+  [  1.68228000e+05   5.12880000e+04   8.39200000e+03   2.21680000e+04]
+  [  1.64853000e+05   4.35370000e+04   1.17670000e+04   2.99190000e+04]
+  [  1.67204000e+05   4.98640000e+04   9.41600000e+03   2.35920000e+04]
+  [  1.65317000e+05   4.79920000e+04   1.13030000e+04   2.54640000e+04]
+  [  1.66447000e+05   4.60610000e+04   1.01730000e+04   2.73950000e+04]
+  [  1.70816000e+05   5.92700000e+04   5.80400000e+03   1.41860000e+04]
+  [  1.68085000e+05   5.04910000e+04   8.53500000e+03   2.29650000e+04]
+  [  1.68585000e+05   5.34490000e+04   8.03500000e+03   2.00070000e+04]
+  [  1.67692000e+05   4.84540000e+04   8.92800000e+03   2.50020000e+04]]
+
+ [[  1.70810000e+05   7.05480000e+04   5.81000000e+03   2.90800000e+03]
+  [  1.74133000e+05   7.09180000e+04   2.48700000e+03   2.53800000e+03]
+  [  1.76292000e+05   7.32790000e+04   3.28000000e+02   1.77000000e+02]
+  [  1.76455000e+05   7.33620000e+04   1.65000000e+02   9.40000000e+01]
+  [  1.74248000e+05   7.13490000e+04   2.37200000e+03   2.10700000e+03]
+  [  1.72426000e+05   6.91190000e+04   4.19400000e+03   4.33700000e+03]
+  [  1.75012000e+05   7.12810000e+04   1.60800000e+03   2.17500000e+03]
+  [  1.74936000e+05   7.24270000e+04   1.68400000e+03   1.02900000e+03]
+  [  1.71702000e+05   6.91010000e+04   4.91800000e+03   4.35500000e+03]
+  [  1.74018000e+05   7.02010000e+04   2.60200000e+03   3.25500000e+03]]]
+
+Tree Params: {'min_weight_fraction_leaf': 1e-05, 'splitter': 'random', 'max_features': 'log2', 'max_leaf_nodes': 10000, 'min_samples_leaf': 1e-05, 'min_samples_split': 1e-05, 'criterion': 'gini', 'max_depth': 100, 'random_state': None}
+NN Params: {'hidden_layer_sizes': (100,), 'beta_1': 0.5, 'alpha': 0.0001, 'activation': 'logistic', 'beta_2': 0.9, 'learning_rate_init': 0.001}
