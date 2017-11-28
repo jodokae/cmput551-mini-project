@@ -22,6 +22,13 @@ data[2] = tnr
 label = ['Accurarcy', 'Sensitivity', 'Specificity']
 algorithms = ['Mean', 'Bayes', 'Tree', 'Neural Net']
 
+for i in range(4):
+    print(algorithms[i])
+    for j in range(3):
+        mean = np.mean(data[j][i])
+        std = np.std(data[j][i])
+        print(label[j] + ': ' + str(mean) + ' +- ' + str(std))
+
 for metric in range(3):
     print(label[metric])
     x = PrettyTable()
