@@ -49,14 +49,14 @@
 \setlength{\parskip}{1.5ex plus0.5ex minus0.5ex}
 
 \begin{abstract}
-	abstract-text %TODO
+	In order to improve developers productivity and increase pace, it is tried to predict the outcome of continuous integration builds. For that, $2,500,756$ builds were analyzed, using three different machine learning algorithms with over $700$ configurations. Generally, all algorithms struggled with predicting faults, but had high sensitivity. In the end, the decision tree classifier could predict the outcome with an accuracy of $76\%$ and performed significantly better than its competitors. 
 \end{abstract}
 
 \section{Introduction}
 
 In modern software engineering using continuous integration is evolved to a best practice. Its goal is it to archive higher productivity while developing and reduce the number of faults and bugs. Thanks to its interweaving with GitHub, TravisCI is commonly used for open source projects. Therefore, there a lots of continuous integration data available. It has be shown that broken builds delay a project significantly \cite{CIDelay}, hence the prediction if a build will fail and why can increase development pace. With this information it is possible to develop tools and techniques which reduce the causes of failing builds. 
 
-In previous researches it was shown that there are correlation between build metrics and outcome \cite{correlation}, and that cascading classifiers work well for predicting the build outcome \cite{cascade}. Another research tried to predict build outcome with decision trees also with using data from previous builds \cite{treeTimes}. This work wants to try a simpler approach and see if it is possible to predict the build outcome only using the currents build information and its associated commits. For this the TravisTorrent \cite{msr17challenge} dataset analyzed in order to classify the build outcome. For this, three different algorithms, naive bayes, neural networks and decision trees, are used to classify this dataset and it is evaluated if one of them is able to accurately learn this problem. 
+In previous researches it was shown that there are correlation between build metrics and outcome \cite{correlation}, and that cascading classifiers work well for predicting the build outcome \cite{cascade}. Another research tried to predict build outcome with decision trees also with using data from previous builds \cite{treeTimes}. This work wants to try a simpler approach and see if it is possible to predict the build outcome only using the currents build information and its associated commits. For this the TravisTorrent \cite{msr17challenge} dataset analyzed in order to classify the build outcome. For this, three different algorithms, naive Bayes, neural networks and decision trees, are used to classify this dataset and it is evaluated if one of them is able to accurately learn this problem. 
 
 \section{Background}
 
@@ -64,15 +64,15 @@ TravisCI is a continuous integration tool to automated compile, build, integrate
 
 \subsection{Dataset}
 
-For the MSR 2017 challenge the dataset TravisTorrent was created. This study uses the version from January 11, 2017. It contains $3,702,595$ samples. A detailed explanation of all the features can be found on the homepage of TravisTorrent\footnote{\url{https://travistorrent.testroots.org/page_dataformat/}}. Because not all features are useful for this study, the number of features were restricted to some features. A list of features can be found under table \ref{featureTable}. Only builds that were either successful, erroneous or failed were considered. Successful builds were considered as class 1, or true, while the other builds were marked as failed, i. e. class 0, or false. Aborted or canceled builds were ignored, therefor only $2,500,756$ builds were considered in the final dataset. In the final dataset $41.6\%$ of the builds did fail. 
+For the MSR 2017 challenge the dataset TravisTorrent was created. This study uses the version from January 11, 2017. It contains $3,702,595$ samples. A detailed explanation of all the features can be found on the homepage of TravisTorrent\footnote{\url{https://travistorrent.testroots.org/page_dataformat/}}. Because not all features are useful for this study, the number of features were restricted to some features. A list of features can be found under table \ref{featureTable}. Only builds that were either successful, erroneous or failed were considered. Successful builds were considered as class 1, or true, while the other builds were marked as failed, i. e. class 0, or false. Aborted or canceled builds were ignored, therefore only $2,500,756$ builds were considered in the final dataset. In the final dataset $41.6\%$ of the builds did fail. 
 
 %Size, Features, Where its from stuff
 
 \subsection{Algorithms}
 
 As a baseline an algorithm is used which labels all data to the most frequent class. Then three supervised classification algorithms are tried. 
-The first one is Naive Bayes which assumes every feature to be gaussian data. 
-The second one is a neural net with one hidden layer and the logistic activation function. As solver for the weight optimization adam\cite{adam}, an optimized stochastic gradient descent, is used. The batchsize is determined automatic, the maximum epochs are set to $200$ and the dataset is shuffle between each epoch.
+The first one is Naive Bayes which assumes every feature to be Gaussian data. 
+The second one is a neural net with one hidden layer and the logistic activation function. As solver for the weight optimization Adam\cite{adam}, an optimized stochastic gradient descent, is used. The batch size is determined automatic, the maximum epochs are set to $200$ and the dataset is shuffle between each epoch.
 As third algorithm a decision tree is used. A decision tree classifier is a tree where the sample switches to the left or right child depending on its value for a feature until it is classified in a leaf node. The criterion for splitting is set to the gini impurity, for performance it takes the best random split. 
 
 %Tree, Bayes, MostFrequent, NN
@@ -122,7 +122,7 @@ When running on the first $50\%$ of the dataset, $243$ different parameter combi
 For the decision tree classifier, $486$ different parameter sets were tried. On five folds, which were not necessarily the same as for the neural net, this resulted into $1215$ different decision trees.
 The best parameters found were the the maximum depth of $100$, the split and leaf ratios all at $1e-5$ and the maximum leaf nodes as $10,000$. As maximum features the logarithm was taken. With this settings, an accuracy of $77.63\%$ was achieved. 
 
-Apart from max\_features all parameters were choses so that they give the least constraints. This gives the algorithm the most freedom to produce the best possible tree, but has the highest probability of overfitting. Only for max\_features a higher constraint resulted into better results.
+Apart from max\_features all parameters were choses so that they give the least constraints. This gives the algorithm the most freedom to produce the best possible tree, but has the highest probability of over fitting Only for max\_features a higher constraint resulted into better results.
 
 \subsection{Cross Algorithms}
 
