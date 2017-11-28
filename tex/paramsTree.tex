@@ -1,0 +1,15 @@
+\begin{table}[H]
+	\caption{Parameters for Decision Tree Classifier}
+	\label{TreeParams}
+	\begin{tabularx}{\textwidth}{ l l X }
+		parameter & values & description \\
+		\hline
+		\texttt{max\_depth} & \texttt{[1, 10, 100]} & maximum depth of the tree \\
+		\texttt{min\_samples\_split} & \texttt{[1e-5, 1e-4, 1e-3]} & minimum fraction of samples needed on both child nodes \\
+		\texttt{min\_samples\_leaf} & \texttt{[1e-5, 1e-4, 1e-3]} & minimum fraction of samples per leaf \\
+		\texttt{min\_weight\_fraction\_leaf} & \texttt{[1e-5, 1e-4, 1e-3]} & minimum weighted fraction of samples per leaf \\
+		\texttt{max\_features} & \texttt{['sqrt', 'log2']} & maximum amount of features considered per split, either $\sqrt{|features|}$ or $\log_2{|features|}$ \\
+		\texttt{max\_leaf\_nodes} & \texttt{[100, 1000, 10000]} & maximum number of leafs in tree
+	\end{tabularx}
+\end{table}
+
