@@ -1,0 +1,79 @@
+\begin{table}
+	\caption{Confusion matrices}
+	\label{confusionmatrices}
+	
+	\begin{subtable}{.5\linewidth}
+	\begin{center}
+	\caption{Baseline Algorithm}
+	\label{confMean}	
+	\scalebox{0.85}{
+	\begin{tabular}{ c c || c | c || c  }
+		 & & \multicolumn{2}{c||}{Actual} & \\
+		 & & S &  F & $\sum$ \\
+		\hhline{~=#=|=#=}
+		\multirow{2}{*}{\begin{turn}{90}Predicted\end{turn}} & S & $176620 \pm 0$ & $73456 \pm 0$ & $250076$ \\
+		& F & $0 \pm 0$ & $0 \pm 0$ & $0$ \\
+		\hhline{~=#=|=#=}
+		& $\sum$ & $176620$ & $73456$ & $250076$
+		
+	\end{tabular}
+
+}
+\end{center}
+\end{subtable}%
+\begin{subtable}{.5\linewidth}
+\begin{center}
+	\caption{Naive Bayes}
+	\label{confBayes}
+	\scalebox{0.85}{
+	\begin{tabular}{ c c || c | c || c  }
+		& & \multicolumn{2}{c||}{Actual} & \\
+		& & S &  F & $\sum$ \\
+		\hhline{~=#=|=#=}
+		\multirow{2}{*}{\begin{turn}{90}Predicted\end{turn}} & S & $173879 \pm 386$ & $71402 \pm 240$ & $245281$ \\
+		& F & $2741 \pm 286$ & $2054 \pm 240$ & $4795$ \\
+		\hhline{~=#=|=#=}
+		& $\sum$ & $176620$ & $73456$ & $250076$
+		
+	\end{tabular}
+}
+\end{center}
+\end{subtable} 
+\begin{subtable}{.5\linewidth}
+	\vspace{0.5cm}
+	\begin{center}
+	\caption{Decision Tree}
+	\label{confTree}
+	\scalebox{0.85}{
+	\begin{tabular}{ c c || c | c || c  }
+		& & \multicolumn{2}{c||}{Actual} & \\
+		& & S &  F & $\sum$ \\
+		\hhline{~=#=|=#=}
+		\multirow{2}{*}{\begin{turn}{90}Predicted\end{turn}} & S & $167435 \pm 1617$ & $50522 \pm 4288$ & $217957$ \\
+		& F & $9185 \pm 1617$ & $22934 \pm 4288$ & $32119$ \\
+		\hhline{~=#=|=#=}
+		& $\sum$ & $176620$ & $73456$ & $250076$
+		
+	\end{tabular}}
+\end{center}
+\end{subtable}%
+\begin{subtable}{.5\linewidth}
+	\vspace{0.5cm}
+	\begin{center}
+	\caption{Neural Network}
+	\label{confNN}
+	\scalebox{0.85}{
+	\begin{tabular}{ c c || c | c || c  }
+		& & \multicolumn{2}{c||}{Actual} & \\
+		& & S &  F & $\sum$ \\
+		\hhline{~=#=|=#=}
+		\multirow{2}{*}{\begin{turn}{90}Predicted\end{turn}} & S & $174003 \pm 1766$ & $71159 \pm 1441$ & $245162$ \\
+		& F & $2617 \pm 1776$ & $2297 \pm 1441$ & $4914$ \\
+		\hhline{~=#=|=#=}
+		& $\sum$ & $176620$ & $73456$ & $250076$
+		
+	\end{tabular}
+}
+\end{center}
+\end{subtable}
+\end{table}
