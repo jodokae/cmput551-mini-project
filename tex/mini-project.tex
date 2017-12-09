@@ -18,7 +18,6 @@
 \usepackage{subcaption}
 \usepackage{hyperref}
 
-
 \setlength{\voffset}{-1in}
 \setlength{\hoffset}{-1in}
 
@@ -50,12 +49,12 @@
 \setlength{\parskip}{1.5ex plus0.5ex minus0.5ex}
 
 \begin{abstract}
-	In order to improve developers productivity and increase pace, it is tried to predict the outcome of continuous integration builds. For that, $2,500,756$ builds with $37$ features were analyzed, using three different machine learning algorithms with over $700$ configurations. Generally, all classifiers struggled with predicting failures, but had high sensitivity. In the end, the decision tree classifier could predict the outcome with an accuracy of $76\%$ and performed significantly better than its competitors. 
+	In order to improve developers productivity and increase development pace, it is tried to predict the outcome of continuous integration builds. For that, $2,500,756$ builds with $37$ features were analyzed, using three different machine learning algorithms with over $700$ configurations. Generally, all classifiers struggled with predicting failures, but had high sensitivity. At the end, the decision tree classifier could predict the outcome with an accuracy of $76\%$ and performed significantly better than its competitors. 
 \end{abstract}
 
 \section{Introduction}
 
-In modern software engineering using continuous integration has evolved to a best practice. Its goal is it to archive higher productivity while developing and reduce the number of faults and bugs. Thanks to its interweaving with GitHub, TravisCI is commonly used for open source projects. Therefore, there lots of continuous integration data is available. It has been shown that broken builds delay a project significantly \cite{CIDelay}, hence the prediction if a build will fail and why can increase development pace. With this information it is possible to develop tools and techniques which can reduce number of failing builds. 
+In modern software engineering using continuous integration has evolved to a best practice. Its goal is to archive higher productivity while developing and reduce the number of faults and bugs. Thanks to its interweaving with GitHub, TravisCI is commonly used for open source projects. Therefore, there is a lot of continuous integration data is available. It has been shown that broken builds delay a project significantly \cite{CIDelay}, hence the prediction if a build will fail and why it does so can increase development pace. With this information, it is possible to develop tools and techniques which can reduce number of failing builds. 
 
 In previous researches it was shown that there are correlations between build metrics and outcome \cite{correlation}, and that cascading classifiers work well for predicting the build outcome \cite{cascade}. Another research tried to predict build outcome with decision trees, as well, using data from previous builds \cite{treeTimes}. This work wants to try a simpler approach and see if it is possible to predict the build outcome only using the current's build information and its associated commits. For this, the TravisTorrent \cite{msr17challenge} dataset is analyzed in order to classify the build outcome. Then, three different algorithms, naive Bayes, neural networks and decision trees, are used to classify this dataset and it is evaluated if one of them is able to accurately learn this problem. 
 
@@ -65,32 +64,36 @@ TravisCI is a continuous integration tool to automated compile, build, integrate
 
 \subsection{Dataset}
 
-For the MSR 2017 challenge the dataset TravisTorrent\cite{msr17challenge} was created. This study uses the version from January 11, 2017. It contains $3,702,595$ samples. A detailed explanation of all the features can be found on the homepage of TravisTorrent\footnote{\url{https://travistorrent.testroots.org/page_dataformat/}}. Because not all features are useful for this study, the number of features were restricted to some features. A list of all $37$ used features can be found under table \ref{featureTable}. 
+The TravisTorrent\cite{msr17challenge} dataset was created for the MSR 2017 challenge. This study uses the version from January 11, 2017 which contains $3,702,595$ samples. A detailed explanation of all the features can be found on the homepage of TravisTorrent\footnote{\url{https://travistorrent.testroots.org/page_dataformat/}}. Because not all features are useful for this study, the number of features was restricted to some features. A list of all $37$ used features can be found under table \ref{featureTable}. 
 Some examples for features are the language the project is written in, the number of people who actively commit to this project, how many files were added, how long did it take to build the project, the number of words in the pull request, or how many tests ran or failed.
 
-Only builds that were either successful, erroneous or failed were considered. Successful builds were considered as class 1, or true, while the other builds were marked as failed, i. e. class 0, or false. Aborted or canceled builds were ignored, therefore only $2,500,756$ builds were considered in the final dataset. In the final dataset $41.6\%$ of the builds did fail. 
+Only builds that were either successful, erroneous or failed were considered. Successful builds were labeled as class 1, or true, while the other builds were marked as failed, i. e. class 0, or false. Aborted or canceled builds were ignored, therefore only $2,500,756$ builds were taken into the final dataset.$41.6\%$ of the builds did fail in the final set.  
 
 %Size, Features, Where its from stuff
 
 \subsection{Algorithms}
 
-As a baseline an algorithm is used which labels all data to the most frequent class. Then three supervised classification algorithms are tried. 
+A mean classifier is used as baseline which all algorithms need to compare to. It labels all data to the most frequent class.
+Then, three supervised classification algorithms are used. 
 The first one is Naive Bayes which assumes every feature to be Gaussian data. This is a very strict assumption and it is known that not all features will satisfy this. Therefore, it is assumed that this algorithm will not perform as good as the other two. 
 
-The second one is a neural net with one hidden layer and the logistic activation function. As solver for the weight optimization Adam\cite{adam}, an optimized stochastic gradient descent, is used. The batch size is determined automatic, the maximum epochs are set to $200$ and the dataset is shuffle between each epoch. The neural network is chosen because it is currently used for a lot of approaches and, hence, to see if it can live up to its expectations.
+The second one is a neural net with one hidden layer and the logistic activation function. Adam\cite{adam}, an optimized stochastic gradient descent, is used as solver for weight optimization. The batch size is determined automatic, the maximum epochs are set to $200$ and the dataset is shuffled between each epoch. The neural network is chosen because it is currently used in a lot of modern learning and, hence, to see if it can live up to its expectations.
 
-As third algorithm a decision tree is used. A decision tree uses subsequent rules to classify the data. For example, the first node could be if the programming language is Java. If that is the case, the sample goes to the left child, otherwise to the right child. This is done, until the sample is classified at a leaf node. The criterion for splitting is set to the gini impurity, for performance it takes the best random split. This algorithm is chosen because previous research has found it useful.
+We use a decision tree as third algorithm. A decision tree uses subsequent rules to classify the data. For example, the first node could be if the programming language is Java. If that is the case, the sample goes to the left child, otherwise to the right child. This is done until the sample is classified at a leaf node. The criterion for splitting is set to gini impurity, for performance it takes the best random split. This algorithm is chosen because previous research has found it useful.
 
 %Tree, Bayes, MostFrequent, NN
 
 \section{Methodology}
 
-The dataset is stored in a MySQL database. From there all samples are extracted and stored in a matrix. The build outcome is put into a vector $y$ with the value $1$ if the build was successful and $0$ otherwise. The 'language' and 'previous build' feature are stored in a vector; for example the language 'java' is encoded into $[1,0,0]$, while 'javascript' is encoded to $[0,1,0]$. The date features are split up into month, day, daytime in seconds and weekday as integers. 
-Since not every sample contains all features, the missing features are set to their respective mean, so it does not impact the classification. Missing features have a miss range of about $20\%$ and occurs in $7$ features, and a missing rate of $85\%$ for $4$ feature, whereof $3$ features can only occur in pull requests and the fourth feature is the build duration. Categorical features did not have missing data. 
+The dataset is stored in a MySQL database. From there all samples are extracted and stored in a matrix. The build outcome is represented in the vector $y$, with value $1$ if the build was successful and $0$ otherwise. The 'language' and 'previous build' features are stored as a vector; for example the language 'java' is encoded into $[1,0,0]$, while 'javascript' is encoded to $[0,1,0]$. The date features are split up into month, day, daytime in seconds and weekday as integers. 
 
-The actual learning is divided into two parts. First, the best parameters for the neural network and the decision tree have to be learned, and afterwards the algorithms need to be compared. Because the dataset is big enough, the dataset is split up in two equal halves, one for every of the two tasks. The split and all following splits are done stratified. This complete split is used so that the parameter search does not bias the inter algorithm comparison. 
+Since not every sample contains all features, the missing features are set to their respective mean, so it does not impact the classification. 
+$7$ features miss each about $20\%$ data. For another $4$ features there is data for only $15\%$ of the samples, whereof $3$ features can only occur in pull requests and the fourth feature is the build duration. 
+Categorical features did not have missing data. 
 
-The used scripts and results can be found in the authors GitHub repository\footnote{\url{https://github.com/jodokae/cmput551-mini-project/}}.
+The actual learning is divided into two parts. First, the best parameters for the neural network and the decision tree have to be learned, and afterwards the algorithms need to be compared. Because the dataset is big enough, it is split up in two equal halves, one for every of the two tasks. The split and all following splits are done stratified. This complete split is used so that the parameter search does not bias the inter algorithm comparison. 
+
+The used scripts and results can be found in the author's GitHub repository\footnote{\url{https://github.com/jodokae/cmput551-mini-project/}}.
 
 %Extraction of Dataset, which features used, missing features
 
@@ -98,7 +101,7 @@ The used scripts and results can be found in the authors GitHub repository\footn
 
 \subsection{Parameter}
 
-To look for the best hyper parameters, the first half of the dataset is used for an exhaustive grid search. This cross validation learns a model for every possible combination of the parameters. This is done on a K-Fold with $k=5$. A list of all tried parameters can be found in tables \ref{TreeParams} and \ref{NNParams}. The parameters were chosen in that way, that they either consider a large range of the possible values (e. g. beta can range from 0 to 1, and we chose 0.1, 0.5 and 0.9) or have been worked well in previous test runs on a smaller set.
+To look for the best hyper parameters, the first half of the dataset is used for an exhaustive grid search. This cross validation learns a model for every possible combination of the parameters. This is done on a K-Fold with $k=5$. A list of all tried parameters can be found in tables \ref{TreeParams} and \ref{NNParams}. The parameters were chosen in a way, that they either consider a large range of the possible values (e. g. beta can range from 0 to 1, and we chose 0.1, 0.5 and 0.9) or have worked well in previous test runs on a smaller set.
 A detailed description of all possible parameters can be found in the documentation of sklearn for the decision tree\footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html}} and the neural network classifier\footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html}}. 
 Accuracy is used as scoring method. 
 
@@ -107,13 +110,16 @@ Accuracy is used as scoring method.
 
 \subsection{Cross Algorithms}
 
-The other half of the data is used to compare the different algorithms. For that the dataset is split up into ten random sets, where the size of the test set is $20\%$. On this, every of the three and the baseline algorithm is run. This is done so the learning with the best hyper parameters does not over fit to a given dataset, because the learned weights from the parameter learning a not remembered to lessen bias. For evaluation the confusion matrix is saved for every run. Then the means and standard deviation over the runs is computed for every algorithm.
+The other half of the data is used to compare the different algorithms. 
+The reasoning for this split is to have an unbiased estimation for the cross algorithm comparison. The learning of the hyper parameters is done completely separate from the comparison and, hence, cannot influence it.
+This half of the data is sampled into ten random sets, where the proportion of test data is $20\%$. We run each of the three and the baseline algorithm on every split. Thus we get $10$ different runs to account for lucky runs and over fitting.
+For evaluation, the confusion matrix is saved for every run. Then the means and standard deviation over the runs is computed for every algorithm.
 
 %Other half of data
 
 \subsection{Statistics}
 
-The algorithms are compared using Welch's t-test, because the variances of the algorithms are different. A t-test is satisfactory here to show if the algorithms have significant changes in their performance measurements. The baseline algorithm has, as expected, a variance of 0, whereas in test runs the neural networks had generally a high standard deviation. As comparing metrics accuracy, sensitivity (recall) and specificity are used, in which the latter ones are equivalent to the AUC of the ROC curve. Those three metrics are used to give a general sense of how good the algorithms are performing and then in detail how good they are at predicting successful and failing builds separately. Precision is not considered because we are more interested in failing builds (condition negative) than in the positive values. Therefore, sensitivity and specificity are better measurements how good we can predict a build in its correct class.
+The algorithms are compared using Welch's t-test, because the variances of the algorithms are different. A t-test is satisfactory to show if the algorithms have significant changes in their performance measurements. The baseline algorithm has, as expected, a variance of 0, whereas in test runs the neural networks had generally a high standard deviation. As comparing metrics accuracy, sensitivity (recall) and specificity are used, in which the latter ones are equivalent to the AUC of the ROC curve. Those three metrics are used to give a general sense of how good the algorithms are performing and then in detail how good they are at predicting successful and failing builds separately. Precision is not considered because we are more interested in failing builds (condition negative) than in the positive values. Therefore, sensitivity and specificity are better measurements how good we can predict a build in its correct class.
 
 The two tailed t-test is done pairwise for every algorithm with  $H_0 : \mu_0 = \mu_1$ and $\alpha=0.05$ to produce a ranking between the three (plus baseline) algorithm. 
 
@@ -125,58 +131,63 @@ The methodology was applied to the full dataset. The following results were foun
 
 \subsection{Parameters}
 
-When running on the first $50\%$ of the dataset, $243$ different parameter combinations were fitted on five folds for the neural nets. This resulted into $1215$ different learnings. With the highest accuracy of $70.78\%$, the parameters which the highest number of hidden units and the smallest alpha was chosen. The learning rate was with $0.001$ the median value, as well as the  beta\_1 parameter, whereas beta\_2 was given the highest value. 
+When running on the first $50\%$ of the dataset, $243$ different parameter combinations were fitted on five folds for the neural nets. This resulted into $1215$ different learnings. With the highest accuracy of $70.78\%$, the parameters with the highest number of hidden units and the smallest alpha were chosen. The learning rate was with $0.001$ the median value, as well as the  beta\_1 parameter, whereas beta\_2 was given its highest value. 
 
 For the decision tree classifier, $486$ different parameter sets were tried. On five folds, which were not necessarily the same as for the neural net, this resulted into $2430$ different decision trees.
-The best parameters found were the the maximum depth of $100$, the split and leaf ratios all at $1e-5$ and the maximum leaf nodes as $10,000$. As maximum features the logarithm was taken. With this settings, an accuracy of $77.63\%$ was achieved. 
+The best parameters found were with a maximum depth of $100$, the split and leaf ratios both at $1e-5$ and the maximum leaf nodes as $10,000$. As maximum features parameter, the logarithm was taken. This setting achieved an accuracy of $77.63\%$. 
 
 Apart from max\_features all parameters were chosen so that they give the least constraints. This gives the algorithm the most freedom to produce the best possible tree, but has the highest probability of over fitting. Only for max\_features a higher constraint resulted into better results.
 
-\subsection{Cross Algorithms}
-
 \input{tables/confusion.tex}
 \input{tables/stats.tex}
-\input{tables/t-test.tex}
+
+\subsection{Cross Algorithms}
+
 
 On the other half of the dataset, the algorithms were compared. Every algorithm was run with their optimized parameters on every of the ten random splits. The averaged results can be found in table \ref{confusionmatrices}.
 
-Obviously, the baseline algorithm just predicted every element to the class with the highest probability, which was the 'Success' class. Therefore, it has never predicted 'Failure'. The decision tree classifier has got very high standard deviation for both classes, especially the prediction for samples, which were failures, deviate at around $1.7\%$. 
+Obviously, the baseline algorithm just predicted every element to the class with the highest probability, which was the 'Success' class. Therefore, it has never predicted 'Failure'. The decision tree classifier has got very high standard deviation for both classes, especially the prediction for samples, which were failures, deviate at around $1.7\%$. This is explained due to the hardly constraining features.
 
-From table \ref{metrics} it can be seen, that the algorithms don't seem to differ that much in terms of accuracy, apart from the decision tree which is ahead with almost $6$ points. This is probably the case because the decision tree is the only algorithm which has an acceptable specificity rate. Although $31\%$ is high in comparison, it is still a low value. 
+As can be seen in table \ref{metrics} the algorithms don't seem to differ that much in terms of accuracy, apart from the decision tree which is ahead with almost $6$ per cent points. This is probably the case because the decision tree is the only algorithm which has an acceptable specificity rate. Although $31\%$ is high in comparison, it is still a low value. 
 
-To confirm the feeling, that the decision tree is the best algorithm in this case, a two tailed t-test was executed for all three metrics pairwise between all algorithms. The null hypothesis, that the algorithms have the same mean, are therefore equal, is tested with $\alpha = 0.05$. The full results can be seen in tables \ref{tAcc} - \ref{tSpec}.
+To confirm the feeling that the decision tree is the best algorithm in this case, a two tailed t-test was executed for all three metrics pairwise between all algorithms. The null hypothesis, that the algorithms have the same mean, are therefore equal, is tested with $\alpha = 0.05$. The full results can be seen in tables \ref{tAcc} - \ref{tSpec}.
 Since the baseline algorithm achieves a full score in sensitivity and zero score at specificity by its nature, the t-test for those metrics is only used for comparison of the algorithms under study.
 
-According to accuracy (table \ref{tAcc}) the Naive Bayes classifier performs worse than the baseline, the neural net performs equally good and only the decision tree can achieve a higher accuracy than the mean predictor. Neural net and Naive Bayes are not statistically different in direct comparison. 
-In terms of sensitivity (table \ref{tSens}) the tree performs the worst. Neural net and Bayes do not differ again, this does not change for specificity (table \ref{tSpec}), as well. The decision excels clearly. 
+According to accuracy (table \ref{tAcc}) the naive Bayes classifier performs worse than the baseline, the neural net performs equally good and only the decision tree can achieve a higher accuracy than the mean predictor. Neural net and Naive Bayes are not statistically different in direct comparison. 
+In terms of sensitivity (table \ref{tSens}) the tree performs the worst. Neural net and Bayes do not differ again, this does not change for specificity (table \ref{tSpec}), as well. The decision tree excels considerably. 
 
-With the results of the t-tests, the decision tree classifier algorithm is considered as winner over the others. Despite losing in sensitivity, the difference is only $4\%$, whereas it wins in classifying failures $10$ times more accurate than the other two algorithms. This is confirmed by the t-test of accuracy. The other two algorithms are not worth using, since they do not perform better than the baseline algorithm. 
+With the results of the t-tests, the decision tree classifier algorithm is considered as winner over the others. Despite losing in sensitivity, the difference is only $4\%$, it wins in classifying failures where it is $10$ times more accurate than the other two algorithms. This is confirmed by the t-test of accuracy. The other two algorithms are not worth using, given that they do not outperform the baseline algorithm. 
+\input{tables/t-test.tex}
 
 \section{Threats to validity}
 
-Not all possibilities could be checked in this project which influence the strength of the results. 
-First of all, because of lack of time (one run of the complete methodology takes over ten hours on a standard laptop), the complete project, i. e. find parameters with cross validation and compare algorithms on different splits, was only done once and not on separate splits of the complete dataset. To compute more splits would take multiple days. This was also necessary, because different runs would produce various optimal parameters, because a different training set can be learned better with other parameters, which would then harden the conclusion of the comparison. Because the dataset is quite large, this issue is considered to be acceptable. 
+In this project not all possibilities which influence the strength of the results could be checked. 
+First of all, because of lack of time (one run of the complete methodology takes over ten hours on a standard laptop), the complete project, i.e. finding parameters with cross validation and compare algorithms on different splits, was only done once and not on separate splits of the complete dataset. To compute more splits would take multiple days. 
+This was also necessary, because different runs would produce various optimal parameters, because a dissimilar training set can be learned better with other parameters, which would then harden the conclusion of the comparison. Because the dataset is quite large, this issue is considered to be acceptable. 
 
-Another runtime related problem is that not all possible parameters were considered. For example, this work restricts itself to the gini impurity for the decision tree. Hence, it cannot be generalized that decision trees are strictly better than neural networks for this dataset, but only under the tested parameters. The terms 'better' and 'winner' are only regarding accuracy, sensitivity and specificity and do not consider runtime or other metrics at all. Because this work only wants to compare the possibility of predicting this type of data at all, runtime was considered a less important aspect. 
+Another runtime related problem is that not all possible parameters were considered. For example, this work restricts itself to the gini impurity for the decision tree. Hence, it cannot be generalized that decision trees are strictly better than neural networks for this dataset, but only under the tested parameters. The terms 'better' and 'winner' are only regarding accuracy, sensitivity and specificity and do not consider runtime or other metrics at all. Because this work only wants to compare the possibility of predicting this type of data at all, runtime was considered to be a less important aspect. 
 
-Since the dataset only is a small snapshot of all CI projects out there, especially restricted only to three programming languages and only open source projects, it cannot be generally said that build outcomes are predictable. But it is believed, that the considered features do not differ significantly between closed and open source projects. Furthermore, the dataset contained missing data for some features, which may impact the outcome of the analysis. This was mitigated due to preprocessing of the data. In future, it might be interesting to see if the accuracy of the prediction can be improved with feature selection. 
-
+Because the dataset only is a small snapshot of all CI projects out there, especially restricted to only three programming languages and open source projects, it cannot be generalized that build outcomes are predictable. But it is believed, that the considered features do not differ significantly between closed and open source projects. 
+Furthermore, the dataset contains missing data for some features, which may impact the outcome of the analysis. This was mitigated due to preprocessing of the data. In future, it might be interesting to see if the accuracy of the prediction can be improved using feature selection. 
 
 \section{Conclusion}	
 
-In order to predict build outcomes of continuous integration builds, it was found, that a decision tree classifier can predict the outcomes with an accuracy of $76\%$. Although it has high variance in its learning, it still outperforms Naive Bayes and neural networks with one hidden layer, by far. That Naive Bayes could not outperform the baseline was expectable, because the dataset does not fulfills all assumptions. But that a neural net did equally bad, is a big surprise. Of course not all possible parameters were tested, but it gives a general idea direction should be looked at. The biggest problem is optimizing the prediction of failing builds, which have only a specificity of $31\%$. 
+In order to predict build outcomes of continuous integration builds, it was found, that a decision tree classifier can predict the outcomes with an accuracy of $76\%$. Although it has high variance in its learning, it still outperforms naive Bayes and neural networks with one hidden layer, by far. That Naive Bayes could not outperform the baseline was expectable, because the dataset does not fulfills all assumptions. But that a neural net did equally bad, is a big surprise. Of course not all possible parameters were tested, but it gives a general idea in which direction should be looked at. The biggest problem is optimizing the prediction of failing builds, which have only a specificity of $31\%$. 
 
 
 \bibliographystyle{ieeetr}
 \bibliography{literature/literature}
 
 \appendix
+\setcounter{table}{0}
+\renewcommand{\thetable}{\Alph{section}\arabic{table}}
 
 \section{Features}
 
 \input{tables/features.tex}
 
 \section{Parameter}
+\setcounter{table}{0}
 
 \input{tables/paramsTree.tex}
 \input{tables/paramsNn.tex}
